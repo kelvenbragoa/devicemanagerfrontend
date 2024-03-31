@@ -14,7 +14,7 @@ const router = createRouter({
                     meta: {
                         requiresAuth: true
                     },
-                    component: () => import('@/views/Dashboard.vue')
+                    component: () => import('@/views/pages/admin/dashboard/Dashboard.vue')
                 },
                 //companies route
                 {
@@ -193,14 +193,32 @@ const router = createRouter({
                         requiresAuth: true
                     },
                     component: () => import('@/views/pages/admin/deliveries/IndexDelivery.vue')
+                    // children: [
+                    //     {
+                    //         path: '/deliveries',
+                    //         component: () => import('@/views/pages/admin/deliveries/IndexDelivery.vue')
+                    //     },
+                    //     {
+                    //         path: '/deliveries/list',
+                    //         component: () => import('@/views/pages/admin/deliveries/IndexDelivery.vue')
+                    //     },
+                    //     {
+                    //         path: '/deliveries/transactions',
+                    //         component: () => import('@/views/pages/admin/companies/IndexCompany.vue')
+                    //     },
+                    //     {
+                    //         path: '/deliveries/logs',
+                    //         component: () => import('@/views/pages/admin/devices/IndexDevice.vue')
+                    //     }
+                    // ]
                 },
                 {
-                    path: '/deliveries/create',
-                    name: 'deliveries.create',
+                    path: '/transactions',
+                    name: 'transactions',
                     meta: {
                         requiresAuth: true
                     },
-                    component: () => import('@/views/pages/admin/deliveries/CreateDelivery.vue')
+                    component: () => import('@/views/pages/admin/deliveries/IndexTransaction.vue')
                 },
                 {
                     path: '/deliveries/:id',
@@ -268,6 +286,9 @@ const router = createRouter({
         {
             path: '/auth/login',
             name: 'login',
+            // meta: {
+            //     hideForAuth: true
+            // },
             component: () => import('@/views/pages/auth/Login.vue')
         },
         {
@@ -297,6 +318,20 @@ router.beforeEach((to, from, next) => {
         // Non-protected route, allow access
         next();
     }
+
+    // if (to.meta.hideForAuth) {
+    //     const token = localStorage.getItem('token');
+    //     if (token) {
+    //         // User is authenticated, proceed to the route
+    //         next('/dashboard');
+    //     } else {
+    //         // User is not authenticated, redirect to login
+    //         next('/dashboard');
+    //     }
+    // } else {
+    //     // Non-protected route, allow access
+    //     next('/dashboard');
+    // }
 });
 
 export default router;

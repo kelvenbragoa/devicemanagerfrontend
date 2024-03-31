@@ -76,7 +76,7 @@ const loginUser = () => {
             </div>
         </div>
     </div>
-    <AppConfig simple />
+    <!-- <AppConfig simple /> -->
 </template>
 
 <style scoped>
