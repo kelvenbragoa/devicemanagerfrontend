@@ -221,6 +221,14 @@ const router = createRouter({
                     component: () => import('@/views/pages/admin/deliveries/IndexTransaction.vue')
                 },
                 {
+                    path: '/audits',
+                    name: 'audits',
+                    meta: {
+                        requiresAuth: true
+                    },
+                    component: () => import('@/views/pages/admin/audits/IndexAuditLogs.vue')
+                },
+                {
                     path: '/deliveries/:id',
                     name: 'deliveries.show',
                     meta: {

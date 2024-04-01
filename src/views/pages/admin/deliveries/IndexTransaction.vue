@@ -99,7 +99,7 @@ onMounted(() => {
 
             <!-- <router-link to="/typedevices/create"> <Button label="Criar Novo Registro" class="mr-2 mb-2"> <i class="pi pi-plus"></i> Criar Novo Registro </Button> </router-link> -->
 
-            <p>Esta tabela contem {{ retriviedData.data ? retriviedData.data.length : 0 }} Registros.</p>
+            <p>Esta tabela contem {{ retriviedData.data ? retriviedData.total : 0 }} Registros.</p>
 
             <DataTable :value="retriviedData.data" tableStyle="min-width: 50rem">
                 <template #header>
@@ -132,7 +132,7 @@ onMounted(() => {
                         <a href="#" @click.prevent="confirmDeletion(slotProps.data.id)"><i class="pi pi-trash"></i></a>
                     </template>
                 </Column> -->
-                <template #footer> No total são {{ retriviedData.data ? retriviedData.data.length : 0 }} Transações. </template>
+                <template #footer> No total são {{ retriviedData.data ? retriviedData.total : 0 }} Transações. </template>
             </DataTable>
             <TailwindPagination :data="retriviedData" @pagination-change-page="getData" bg-whitebg-blue-50 style="width: 10px" />
         </div>

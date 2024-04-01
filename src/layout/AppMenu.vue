@@ -27,7 +27,8 @@ const model = ref([
         label: 'Operação',
         items: [
             { label: 'Gestao de Entregas', icon: 'pi pi-fw pi-database', to: '/deliveries' },
-            { label: 'Transações', icon: 'pi pi-fw pi-database', to: '/transactions' }
+            { label: 'Transações', icon: 'pi pi-fw pi-database', to: '/transactions' },
+            { label: 'Auditoria de Registros', icon: 'pi pi-fw pi-history', to: '/audits' }
 
         ]
     },

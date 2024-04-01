@@ -98,7 +98,7 @@ onMounted(() => {
 
             <router-link to="/users/create"> <Button label="Criar Novo Registro" class="mr-2 mb-2"> <i class="pi pi-plus"></i> Criar Novo Registro </Button> </router-link>
 
-            <p>Esta tabela contem {{ retriviedData.data ? retriviedData.data.length : 0 }} Registros.</p>
+            <p>Esta tabela contem {{ retriviedData.data ? retriviedData.total : 0 }} Registros.</p>
 
             <DataTable :value="retriviedData.data" tableStyle="min-width: 50rem">
                 <template #header>
@@ -144,7 +144,7 @@ onMounted(() => {
                         <Tag :value="slotProps.data.inventoryStatus" :severity="getSeverity(slotProps.data)" />
                     </template>
                 </Column> -->
-                <template #footer> No total são {{ retriviedData.data ? retriviedData.data.length : 0 }} Usuários. </template>
+                <template #footer> No total são {{ retriviedData.data ? retriviedData.total : 0 }} Usuários. </template>
             </DataTable>
             <TailwindPagination :data="retriviedData" @pagination-change-page="getData" bg-whitebg-blue-50 style="width: 10px" />
         </div>

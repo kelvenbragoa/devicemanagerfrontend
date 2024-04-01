@@ -29,13 +29,14 @@ let dataIdBeingDeleted = ref(null);
 
 const getData = async (page = 1) => {
     axios
-        .get(`${baseURL}/employees?page=${page}`, {
+        .get(`${baseURL}/audits?page=${page}`, {
             params: {
                 query: searchQuery.value
             }
         })
         .then((response) => {
-            retriviedData.value = response.data.employee;
+            retriviedData.value = response.data.audit;
+            console.log(retriviedData.value)
             isLoadingDiv.value = false;
         })
         .catch((error) => {
@@ -63,7 +64,7 @@ const deleteData = () => {
     loadingButtonDelete.value = true;
 
     axios
-        .delete(`${baseURL}/employees/${dataIdBeingDeleted.value}`)
+        .delete(`${baseURL}/typedevices/${dataIdBeingDeleted.value}`)
         .then(() => {
             retriviedData.value.data = retriviedData.value.data.filter((data) => data.id !== dataIdBeingDeleted.value);
             closeConfirmation();
@@ -72,6 +73,7 @@ const deleteData = () => {
         .catch((error) => {
             toast.add({ severity: 'error', summary: `${error}`, detail: 'Message Detail', life: 3000 });
             loadingButtonDelete.value = false;
+            $('#deleteModal').modal('hide');
         })
         .finally(() => {
             loadingButtonDelete.value = false;
@@ -87,64 +89,48 @@ onMounted(() => {
     <div className="card" v-if="!isLoadingDiv">
         <div class="col-12">
             <div class="card-w-title">
-                <h5>Trabalhadores</h5>
+                <h5>Auditoria de Registros</h5>
                 <IconField iconPosition="left">
                     <InputIcon class="pi pi-search" />
                     <InputText type="text" placeholder="Procurar ..." v-model="searchQuery" />
                 </IconField>
             </div>
 
-            <h5>Registro das Trabalhadores</h5>
+            <h5>Auditoria de Registros</h5>
 
-            <router-link to="/employees/create"> <Button label="Criar Novo Registro" class="mr-2 mb-2"> <i class="pi pi-plus"></i> Criar Novo Registro </Button> </router-link>
+            <!-- <router-link to="/typedevices/create"> <Button label="Criar Novo Registro" class="mr-2 mb-2"> <i class="pi pi-plus"></i> Criar Novo Registro </Button> </router-link> -->
 
             <p>Esta tabela contem {{ retriviedData.data ? retriviedData.total : 0 }} Registros.</p>
 
             <DataTable :value="retriviedData.data" tableStyle="min-width: 50rem">
                 <template #header>
                     <div class="flex flex-wrap align-items-center justify-content-between gap-2">
-                        <span class="text-xl text-900 font-bold">Trabalhadores</span>
-                        <Button icon="pi pi-refresh" rounded raised @click="getData()" />
+                        <span class="text-xl text-900 font-bold">Dispositivos</span>
+                        <Button icon="pi pi-refresh" rounded raised @click="getData" />
                     </div>
                 </template>
-                <Column field="name" header="#">
+                <Column field="id" header="#">
                     <template #body="slotProps">
                         {{ slotProps.index + 1 }}
                     </template>
                 </Column>
-                <Column field="name" sortable header="Nome"></Column>
-                <Column field="email" sortable header="Email"></Column>
-                <Column field="mobile" sortable header="Telefone"></Column>
-                <Column field="company.name" sortable header="Empresa"></Column>
                 <Column field="created_at" sortable header="Criado em">
                     <template #body="slotProps">
                         {{ moment(slotProps.data.created_at).format('DD-MM-YYYY H:mm') }}
                     </template>
                 </Column>
-                <Column header="Ações">
+                <Column field="subject_type" sortable header="Nome do Recurso Afetado"></Column>
+                <Column field="event" sortable header="Tipo">
                     <template #body="slotProps">
-                        <router-link :to="'/employees/' + slotProps.data.id + '/edit'"><i class="pi pi-file-edit"></i></router-link> | <router-link :to="'/employees/' + slotProps.data.id"><i class="pi pi-eye"></i></router-link> |
-                        <a href="#" @click.prevent="confirmDeletion(slotProps.data.id)"><i class="pi pi-trash"></i></a>
+                        <Tag severity="success" v-if="slotProps.data.event === 'created'">{{ slotProps.data.event }}</Tag>
+                        <Tag severity="warning" v-if="slotProps.data.event === 'updated'">{{ slotProps.data.event }}</Tag>
+                        <Tag severity="danger" v-if="slotProps.data.event === 'deleted'">{{ slotProps.data.event }}</Tag>
                     </template>
                 </Column>
-                <!-- <Column header="Image">
-                    <template #body="slotProps">
-                        <img :src="`https://primefaces.org/cdn/primevue/images/product/${slotProps.data.image}`" :alt="slotProps.data.image" class="w-6rem border-round" />
-                    </template>
-                </Column>
-                <Column field="price" header="Price">
-                    <template #body="slotProps">
-                        {{ formatCurrency(slotProps.data.price) }}
-                    </template>
-                </Column>
-                <Column field="category" header="Category"></Column>
-               
-                <Column header="Status">
-                    <template #body="slotProps">
-                        <Tag :value="slotProps.data.inventoryStatus" :severity="getSeverity(slotProps.data)" />
-                    </template>
-                </Column> -->
-                <template #footer> No total são {{ retriviedData.data ? retriviedData.total : 0 }} Trabalhadores. </template>
+                <Column field="causer.name" sortable header="Feito por"></Column>
+                <Column field="properties.attributes" sortable header="Parametros Novos"></Column>
+                <Column field="properties.old" sortable header="Parametros Antigos"></Column>
+                <template #footer> No total são {{ retriviedData.data ? retriviedData.total : 0 }} Transações. </template>
             </DataTable>
             <TailwindPagination :data="retriviedData" @pagination-change-page="getData" bg-whitebg-blue-50 style="width: 10px" />
         </div>
