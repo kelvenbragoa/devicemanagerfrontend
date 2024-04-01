@@ -10,6 +10,7 @@ import { useToast } from 'primevue/usetoast';
 import moment from 'moment';
 import { debounce } from 'lodash';
 import { Bootstrap4Pagination, TailwindPagination } from 'laravel-vue-pagination';
+import { VueDraggableDirective } from 'vue-draggable'
 
 const router = useRouter();
 const layout = ref('grid');
@@ -244,7 +245,7 @@ onMounted(() => {
                                             <template #list="slotProps">
                                                 <div class="grid grid-nogutter">
                                                     <div v-for="(item, index) in slotProps.items" :key="index" class="col-12">
-                                                        <div class="flex flex-column sm:flex-row sm:align-items-center p-4 gap-3" :class="{ 'border-top-1 surface-border': index !== 0 }">
+                                                        <div class="flex flex-column sm:flex-row sm:align-items-center p-4 gap-3" :class="{ 'border-top-1 surface-border': index !== 0 }" v-drag-and-drop:options="options">
                                                             <div class="md:w-10rem relative">
                                                                 <img class="block xl:block mx-auto border-round w-full" src="/demo/sys/device.jpg" :alt="item.name" />
                                                                 <Tag :value="item.devicestatus.name" :severity="getStatus(item)" class="absolute" style="left: 4px; top: 4px"></Tag>
