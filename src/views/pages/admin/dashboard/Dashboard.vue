@@ -7,6 +7,7 @@ import { useLayout } from '@/layout/composables/layout';
 import axios from 'axios';
 import { baseURL } from '@/service/ApiConstant';
 import { useToast } from 'primevue/usetoast';
+import moment from 'moment';
 
 let documentStyle = getComputedStyle(document.documentElement);
 let textColor = documentStyle.getPropertyValue('--text-color');
@@ -17,7 +18,7 @@ const router = useRouter();
 
 const { isDarkTheme } = useLayout();
 const searchQuery = ref(null);
-const products = ref(null);
+const transactions = ref(null);
 const isLoadingDiv = ref(true);
 const retriviedData = ref();
 function goBackUsingBack() {
@@ -30,7 +31,19 @@ const barData = ref({
     labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
     datasets: [
         {
-            label: 'Entregas',
+            label: 'Entregas Diárias',
+            backgroundColor: documentStyle.getPropertyValue('--primary-500'),
+            borderColor: documentStyle.getPropertyValue('--primary-500'),
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        }
+    ]
+});
+
+const barDataMonth = ref({
+    labels:['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+    datasets: [
+        {
+            label: 'Entregas Mensais',
             backgroundColor: documentStyle.getPropertyValue('--primary-500'),
             borderColor: documentStyle.getPropertyValue('--primary-500'),
             data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -83,7 +96,8 @@ const getData = async (page = 1) => {
         .then((response) => {
             retriviedData.value = response.data;
             barData.value.datasets[0].data = response.data.dataDeliveryDay;
-
+            barDataMonth.value.datasets[0].data = response.data.dataDeliveryMonth;
+            transactions.value = response.data.transactions;
             isLoadingDiv.value = false;
         })
         .catch((error) => {
@@ -225,10 +239,16 @@ watch(
             </div>
         </div>
 
-        <div class="col-12 xl:col-12">
+        <div class="col-12 xl:col-6">
             <div class="card">
                 <h5>Entregas Diárias</h5>
                 <Chart type="bar" :data="barData" :options="barOptions"></Chart>
+            </div>
+        </div>
+        <div class="col-12 xl:col-6">
+            <div class="card">
+                <h5>Entregas Mensais</h5>
+                <Chart type="bar" :data="barDataMonth" :options="barOptions"></Chart>
             </div>
         </div>
 
@@ -236,28 +256,28 @@ watch(
             <div class="card">
                 <div class="flex align-items-center justify-content-between mb-4">
                     <h5>Atividades/Transações Recentes</h5>
+                    <router-link to="/transactions"><small>Ver todas transações</small></router-link> 
                     <!-- <div>
                         <Button icon="pi pi-ellipsis-v" class="p-button-text p-button-plain p-button-rounded" @click="$refs.menu1.toggle($event)"></Button>
                         <Menu ref="menu1" :popup="true" :model="items"></Menu>
                     </div> -->
                 </div>
 
-                <span class="block text-600 font-medium mb-3">TODAY</span>
                 <ul class="p-0 mx-0 mt-0 mb-4 list-none">
-                    <li class="flex align-items-center py-2 border-bottom-1 surface-border">
+                    <li class="flex align-items-center py-2 border-bottom-1 surface-border" v-for="items in transactions" :key="items.id">
                         <div class="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
-                            <i class="pi pi-dollar text-xl text-red-500"></i>
+                            <i class="pi pi-bars text-xl text-blue-500"></i>
                         </div>
                         <span class="text-900 line-height-3"
-                            >Richard Jones
-                            <span class="text-700">has purchased a blue t-shirt for has purchased a blue t-shirt for has purchased a blue t-shirt for <span class="text-blue-500">79$</span></span>
+                            >{{ items.user.name }}
+                            <span class="text-700">
+                                efetuou uma operacao de 
+                                <Tag severity="success" v-if="items.operation_id == 1"> {{ items.operation.name }}</Tag>
+                                <Tag severity="danger" v-if="items.operation_id == 2"> {{ items.operation.name }}</Tag> 
+                                do dispositivo {{ items.device.name }} ({{ items.employee.name }} - {{ items.employee.company.name }}) -
+                                {{ moment(items.created_at).format('DD-MM-YYYY H:mm') }}
+                            </span>
                         </span>
-                    </li>
-                    <li class="flex align-items-center py-2">
-                        <div class="w-3rem h-3rem flex align-items-center justify-content-center bg-orange-100 border-circle mr-3 flex-shrink-0">
-                            <i class="pi pi-download text-xl text-orange-500"></i>
-                        </div>
-                        <span class="text-700 line-height-3">Your request for withdrawal of <span class="text-blue-500 font-medium">2500$</span> has been initiated.</span>
                     </li>
                 </ul>
             </div>

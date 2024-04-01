@@ -14,7 +14,7 @@ import Paginator from 'primevue/paginator';
 
 const router = useRouter();
 const isLoadingDiv = ref(true);
-const isLoadingButton = ref(false);
+const isLoadingButtonExport = ref(false);
 const retriviedData = ref({ data: [] });
 const toast = useToast();
 const searchQuery = ref(null);
@@ -59,6 +59,27 @@ const confirmDeletion = (id) => {
     dataIdBeingDeleted.value = id;
 };
 
+const downloadReport = () => {
+    isLoadingButtonExport.value = true;
+    axios
+        .get(`${baseURL}/export`, { responseType: 'blob' })
+        .then((response) => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'transactions.xlsx');
+            document.body.appendChild(link);
+            link.click();
+
+            toast.add({ severity: 'success', detail: `Relatorio baixado com sucesso`, summary: 'Sucesso', life: 3000 });
+            isLoadingButtonExport.value = false;
+        })
+        .catch((error) => {
+            isLoadingButtonExport.value = false;
+            toast.add({ severity: 'error', detail: `${error}`, summary: 'Erro', life: 3000 });
+        });
+};
+
 const deleteData = () => {
     loadingButtonDelete.value = true;
 
@@ -67,10 +88,10 @@ const deleteData = () => {
         .then(() => {
             retriviedData.value.data = retriviedData.value.data.filter((data) => data.id !== dataIdBeingDeleted.value);
             closeConfirmation();
-            toast.add({ severity: 'success', summary: `Sucesso`, detail: 'Message Detail', life: 3000 });
+            toast.add({ severity: 'success', summary: `Sucesso`, detail: 'Sucesso', life: 3000 });
         })
         .catch((error) => {
-            toast.add({ severity: 'error', summary: `${error}`, detail: 'Message Detail', life: 3000 });
+            toast.add({ severity: 'error', summary: `${error}`, detail: 'Erro Detail', life: 3000 });
             loadingButtonDelete.value = false;
             $('#deleteModal').modal('hide');
         })
@@ -98,6 +119,7 @@ onMounted(() => {
             <h5>Registro das Transações/Actividades</h5>
 
             <!-- <router-link to="/typedevices/create"> <Button label="Criar Novo Registro" class="mr-2 mb-2"> <i class="pi pi-plus"></i> Criar Novo Registro </Button> </router-link> -->
+            <Button label="Baixar" class="mr-2 mb-2" @click="downloadReport()" :disabled="isLoadingButtonExport"> <i :class="!isLoadingButtonExport ? 'pi pi-arrow-down' : 'pi pi-spinner'"></i> Baixar Registro </Button>
 
             <p>Esta tabela contem {{ retriviedData.data ? retriviedData.total : 0 }} Registros.</p>
 
@@ -113,7 +135,12 @@ onMounted(() => {
                         {{ slotProps.index + 1 }}
                     </template>
                 </Column>
-                <Column field="operation.name" sortable header="Operação"></Column>
+                <Column field="operation.name" sortable header="Operação">
+                    <template #body="slotProps">
+                        <Tag severity="success" v-if="slotProps.data.operation_id == 1"> {{ slotProps.data.operation.name }}</Tag>
+                        <Tag severity="danger" v-if="slotProps.data.operation_id == 2"> {{ slotProps.data.operation.name }}</Tag>
+                    </template>
+                </Column>
                 <Column field="device.name" sortable header="Dispositivo">
                     <template #body="slotProps">
                         {{ slotProps.data.device.name + ' ( ' + slotProps.data.device.serial + ' )' }}
@@ -121,6 +148,12 @@ onMounted(() => {
                 </Column>
                 <Column field="employee.name" sortable header="Trabalhador"></Column>
                 <Column field="user.name" sortable header="Por"></Column>
+                <Column field="user.name" sortable header="Tempo de Uso">
+                    <template #body="slotProps">
+                        <span v-if="slotProps.data.operation_id == 1"> ---- </span>
+                        <span v-else> {{ moment(slotProps.data.created_at).diff(slotProps.data.delivery.created_at, 'hours') }} Horas e {{ moment(slotProps.data.created_at).diff(slotProps.data.delivery.created_at, 'minutes') }} Minutos </span>
+                    </template>
+                </Column>
                 <Column field="created_at" sortable header="Criado em">
                     <template #body="slotProps">
                         {{ moment(slotProps.data.created_at).format('DD-MM-YYYY H:mm') }}

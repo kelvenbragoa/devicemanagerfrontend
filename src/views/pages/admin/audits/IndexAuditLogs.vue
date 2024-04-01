@@ -9,7 +9,6 @@ import { useToast } from 'primevue/usetoast';
 import moment from 'moment';
 import { debounce } from 'lodash';
 import { Bootstrap4Pagination, TailwindPagination } from 'laravel-vue-pagination';
-
 import Paginator from 'primevue/paginator';
 
 const router = useRouter();
@@ -36,7 +35,6 @@ const getData = async (page = 1) => {
         })
         .then((response) => {
             retriviedData.value = response.data.audit;
-            console.log(retriviedData.value)
             isLoadingDiv.value = false;
         })
         .catch((error) => {

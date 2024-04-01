@@ -6,13 +6,17 @@ import axios from 'axios';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { useToast } from 'primevue/usetoast';
+import moment from 'moment';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
+import { Bootstrap4Pagination, TailwindPagination } from 'laravel-vue-pagination';
+import Paginator from 'primevue/paginator';
 
 const router = useRouter();
 const isLoadingDiv = ref(true);
 const isLoadingButton = ref(false);
 const retriviedData = ref();
+const auditData = ref();
 const toast = useToast();
 
 function goBackUsingBack() {
@@ -68,12 +72,13 @@ const onSubmit = handleSubmit((values) => {
         });
 });
 
-const getData = () => {
+const getData = async (page = 1) => {
     axios
-        .get(`${baseURL}/users/${router.currentRoute.value.params.id}`)
+        .get(`${baseURL}/users/${router.currentRoute.value.params.id}?page=${page}`)
         .then((response) => {
             // toast.add({ severity: 'success', summary: 'Success Message', detail: 'Message Detail', life: 3000 });
             retriviedData.value = response.data.user;
+            auditData.value = response.data.audit;
             isLoadingDiv.value = false;
         })
         .catch((error) => {
@@ -94,11 +99,51 @@ onMounted(() => {
                 <h5>Usuario</h5>
             </div>
 
-            <p>Detalhes da Usuario</p>
+            <h5>Detalhes da Usuario</h5>
             <p><strong>Nome:</strong> {{ retriviedData.name }}</p>
             <p><strong>Email:</strong> {{ retriviedData.email }}</p>
             <p><strong>Telefone:</strong> {{ retriviedData.mobile }}</p>
             <p><strong>Nível:</strong> {{ retriviedData.role.name }}</p>
+            <hr>
+            <h5>Auditoria de Registro do Usuario</h5>
+            <DataTable :value="auditData.data" tableStyle="min-width: 50rem">
+                <template #header>
+                    <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+                        <span class="text-xl text-900 font-bold">Dispositivos</span>
+                        <Button icon="pi pi-refresh" rounded raised @click="getData" />
+                    </div>
+                </template>
+                <Column field="id" header="#">
+                    <template #body="slotProps">
+                        {{ slotProps.index + 1 }}
+                    </template>
+                </Column>
+                <Column field="created_at" sortable header="Criado em">
+                   
+                    <template #body="slotProps">
+                        {{ moment(slotProps.data.created_at).format('DD-MM-YYYY H:mm') }}
+                </template>
+                </Column>
+                <Column field="created_at" sortable header="Criado em">
+                    <template #body="slotProps">
+                        {{ moment(slotProps.data.created_at).format('DD-MM-YYYY H:mm') }}
+                    </template>
+                </Column>
+                <Column field="subject_type" sortable header="Nome do Recurso Afetado"></Column>
+                <Column field="event" sortable header="Tipo">
+                    <template #body="slotProps">
+                        <Tag severity="success" v-if="slotProps.data.event === 'created'">{{ slotProps.data.event }}</Tag>
+                        <Tag severity="warning" v-if="slotProps.data.event === 'updated'">{{ slotProps.data.event }}</Tag>
+                        <Tag severity="danger" v-if="slotProps.data.event === 'deleted'">{{ slotProps.data.event }}</Tag>
+                    </template>
+                </Column>
+                <Column field="causer.name" sortable header="Feito por"></Column>
+                <Column field="properties.attributes" sortable header="Parametros Novos"></Column>
+                <Column field="properties.old" sortable header="Parametros Antigos"></Column>
+                <template #footer> No total são {{ auditData.data ? auditData.total : 0 }} Transações. </template>
+            </DataTable>
+            <TailwindPagination :data="auditData" @pagination-change-page="getData" bg-whitebg-blue-50 style="width: 10px" />
+            
         </div>
     </div>
     <div class="text-center" v-else>
