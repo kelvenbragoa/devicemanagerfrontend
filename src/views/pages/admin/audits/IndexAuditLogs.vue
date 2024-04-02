@@ -144,6 +144,7 @@ onMounted(() => {
                 <Column field="subject_type" sortable header="Nome do Recurso Afetado"></Column>
                 <Column field="event" sortable header="Tipo">
                     <template #body="slotProps">
+                        <Tag severity="info" v-if="slotProps.data.event === 'login'">{{ slotProps.data.event }}</Tag>
                         <Tag severity="success" v-if="slotProps.data.event === 'created'">{{ slotProps.data.event }}</Tag>
                         <Tag severity="warning" v-if="slotProps.data.event === 'updated'">{{ slotProps.data.event }}</Tag>
                         <Tag severity="danger" v-if="slotProps.data.event === 'deleted'">{{ slotProps.data.event }}</Tag>

@@ -9,17 +9,19 @@ import { useToast } from 'primevue/usetoast';
 import moment from 'moment';
 import { debounce } from 'lodash';
 import { Bootstrap4Pagination, TailwindPagination } from 'laravel-vue-pagination';
-
+import { logout } from '@/service/ApiConstant';
 import Paginator from 'primevue/paginator';
 import Dropdown from 'primevue/dropdown';
 
 const router = useRouter();
 const isLoadingDiv = ref(true);
+const isLoadingLogOut = ref(false);
 const isLoadingButton = ref(false);
 const retriviedData = ref({ data: [] });
 const audits = ref({ data: [] });
 const toast = useToast();
 const searchQuery = ref(null);
+const histories = ref();
 const displayConfirmation = ref(false);
 const deviceavailability = ref(false);
 const name = ref();
@@ -83,6 +85,7 @@ const getData = async (page = 1) => {
         })
         .then((response) => {
             retriviedData.value = response.data.user;
+            histories.value = response.data.history;
             name.value = response.data.user.name;
             email.value = response.data.user.email;
             mobile.value = response.data.user.mobile;
@@ -97,6 +100,12 @@ const getData = async (page = 1) => {
         });
 };
 
+const logoutapp = () => {
+    isLoadingLogOut.value = true;
+    logout();
+    isLoadingLogOut.value = false;
+};
+
 onMounted(() => {
     getData();
 });
@@ -105,14 +114,22 @@ onMounted(() => {
 <template>
     <div class="grid" v-if="!isLoadingDiv">
         <div class="col-12 lg:col-6 xl:col-4">
-            <div className="card text-center">
-                <h5>Perfil do Usuario</h5>
-                <img src="/demo/sys/logo.jpg" alt="Image" height="100" class="mb-3 circle" />
+            <div className="card">
+                <div className="text-center">
+                    <h5>Perfil do Usuario</h5>
+                    <img src="/demo/sys/logo.jpg" alt="Image" height="100" class="mb-3 circle" />
+                </div>
                 <hr />
                 <p><strong>Nome:</strong> {{ retriviedData.name }}</p>
                 <p><strong>Email:</strong> {{ retriviedData.email }}</p>
                 <p><strong>Mobile:</strong> {{ retriviedData.mobile }}</p>
                 <p><strong>Nivel:</strong> {{ retriviedData.role.name }}</p>
+                <hr />
+                <p>Login History</p>
+                <p v-for="history in histories" :key="history.id">
+                    <small> Ultimo Login as {{ moment(history.created_at).format('H:mm DD-MM-YYYY') }} pelo Ip: {{ history.properties.ip }} </small>
+                </p>
+                <Button label="LogOut" class="mr-2 mb-2" @click="logoutapp()" :disabled="isLoadingLogOut"> <i :class="!isLoadingLogOut ? 'pi pi-sign-out' : 'pi pi-spinner'"></i>LogOut</Button>
             </div>
         </div>
         <div class="col-12 lg:col-6 xl:col-8">

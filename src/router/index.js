@@ -221,6 +221,14 @@ const router = createRouter({
                     component: () => import('@/views/pages/admin/deliveries/IndexTransaction.vue')
                 },
                 {
+                    path: '/notifications',
+                    name: 'notifications',
+                    meta: {
+                        requiresAuth: true
+                    },
+                    component: () => import('@/views/pages/admin/notifications/IndexNotification.vue')
+                },
+                {
                     path: '/audits',
                     name: 'audits',
                     meta: {
