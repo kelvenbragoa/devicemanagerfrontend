@@ -10,6 +10,8 @@ import { useToast } from 'primevue/usetoast';
 import moment from 'moment';
 import { debounce } from 'lodash';
 import { Bootstrap4Pagination, TailwindPagination } from 'laravel-vue-pagination';
+import { dragscroll } from 'vue-dragscroll';
+
 const router = useRouter();
 const layout = ref('grid');
 const isLoadingDiv = ref(true);
@@ -210,20 +212,35 @@ const onUpdate = () => {
 const startDrag = (event, item) => {
     console.log(item);
     event.dataTransfer.setData('itemID', item.id);
+    event.dataTransfer.setData('deviceavailability', item.device_availability_id);
+    event.dataTransfer.setData('devicestatus', item.device_status_id);
 };
 
 const onDrop = (event, item) => {
     const itemId = event.dataTransfer.getData('itemID');
-    // console.log(itemId);
+    const availability = event.dataTransfer.getData('deviceavailability');
+    const status = event.dataTransfer.getData('devicestatus');
+
+    if (availability == 2) {
+        toast.add({ severity: 'error', summary: 'Este dispositivo encontra-se em uso no momento, escolhe outro.', detail: 'Detalhe da Mensagem', life: 3000 });
+        return
+    }
+    if (status == 2) {
+        toast.add({ severity: 'error', summary: 'Este dispositivo encontra-se danificado no momento, escolhe outro', detail: 'Detalhe da Mensagem', life: 3000 });
+        return
+    }
+
+    // console.log(itemId.id);
     // console.log(item);
     // console.log(item.id);
-    openOverLay()
+    // if(itemId.)
+    openOverLay();
 
     const values = {
         device_id: itemId,
         company_id: item.company_id,
         employee_id: item.id
-    }
+    };
 
     // console.log(values);
 
@@ -262,7 +279,15 @@ onMounted(() => {
                 <SplitterPanel :size="25" :minSize="20">
                     <Accordion :activeIndex="0">
                         <AccordionTab :header="company.name + `(${company.employees.length})`" v-for="company in retriviedData" :key="company.id">
-                            <div class="flex align-items-center justify-content-start mb-4 ml-2 mt-2" v-for="employee in company.employees" :key="employee.id" @drop="onDrop($event, employee)" @dragenter.prevent @dragover.prevent>
+                            <div
+                                class="flex align-items-center justify-content-start mb-4 ml-2 mt-4 p-button-rounded"
+                                v-for="employee in company.employees"
+                                :key="employee.id"
+                                @drop="onDrop($event, employee)"
+                                @dragenter.prevent
+                                @dragover.prevent
+                                :class="employee.deviceinhold == null ? 'bg-blue-200' : 'bg-red-200'"
+                            >
                                 <span><i class="pi pi-users"></i> {{ employee.name }} {{ employee.deviceinhold == null ? '' : `(${employee.deviceinhold.device.name})` }}</span>
                             </div>
                         </AccordionTab>
@@ -327,7 +352,7 @@ onMounted(() => {
                                             <!-- TIPO DE VISUALIZACAO GRELHA -->
                                             <template #grid="slotProps">
                                                 <div class="grid grid-nogutter">
-                                                    <div v-for="(item, index) in slotProps.items" :key="index" draggable="true" @dragstart="startDrag($event, item)" class="col-12 sm:col-6 md:col-4 p-2">
+                                                    <div v-for="(item, index) in slotProps.items" :key="index" draggable="true" @dragstart="startDrag($event, item)" class="col-12 sm:col-6 md:col-3 p-2">
                                                         <div class="p-4 border-1 surface-border surface-card border-round flex flex-column">
                                                             <div class="surface-50 flex justify-content-center border-round p-3">
                                                                 <div class="relative mx-auto">
@@ -340,9 +365,9 @@ onMounted(() => {
                                                                 <div class="flex flex-row justify-content-between align-items-start gap-2">
                                                                     <div>
                                                                         <span class="font-medium text-secondary text-sm">{{ item.typedevice.name }}</span>
-                                                                        <div class="text-lg font-medium text-900 mt-1">{{ item.name }}</div>
-                                                                        <div class="text-lg font-medium text-900 mt-1">{{ item.serial }}</div>
-                                                                        <div class="text-lg font-medium text-900 mt-1" v-if="item.employeeholding != null">{{ item.employeeholding.employee.name }} ({{ item.employeeholding.company.name }})</div>
+                                                                        <div class="text-sm font-medium text-900 mt-1">{{ item.name }}</div>
+                                                                        <div class="text-sm font-medium text-900 mt-1">{{ item.serial }}</div>
+                                                                        <div class="text-sm font-medium text-900 mt-1" v-if="item.employeeholding != null">{{ item.employeeholding.employee.name }} ({{ item.employeeholding.company.name }})</div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="flex flex-column gap-4 mt-4">
@@ -425,7 +450,7 @@ onMounted(() => {
     <Dialog header="Atribuindo o dispositivo" v-model:visible="overlayLoading" :breakpoints="{ '960px': '75vw' }" :style="{ width: '40vw' }" :modal="true">
         <div class="col-12 md:col-12">
             <div class="p-fluid text-center">
-                <ProgressSpinner style="width: 35px; height: 35px" strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner"/>
+                <ProgressSpinner style="width: 35px; height: 35px" strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner" />
                 <p>Por favor aguarde</p>
             </div>
         </div>
