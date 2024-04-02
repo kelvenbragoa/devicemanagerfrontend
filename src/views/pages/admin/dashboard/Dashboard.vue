@@ -15,7 +15,10 @@ let textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary'
 let surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 const toast = useToast();
 const router = useRouter();
-
+const pieData = ref(null);
+const polarData = ref(null);
+const polarOptions = ref(null);
+const pieOptions = ref(null);
 const { isDarkTheme } = useLayout();
 const searchQuery = ref(null);
 const transactions = ref(null);
@@ -98,6 +101,10 @@ const getData = async (page = 1) => {
             barData.value.datasets[0].data = response.data.dataDeliveryDay;
             barDataMonth.value.datasets[0].data = response.data.dataDeliveryMonth;
             transactions.value = response.data.transactions;
+            pieData.value.datasets[0].data = response.data.pieData;
+            pieData.value.labels = response.data.pieLabel;
+            polarData.value.datasets[0].data = response.data.polarData;
+            polarData.value.labels = response.data.polarLabel;
             isLoadingDiv.value = false;
         })
         .catch((error) => {
@@ -107,6 +114,54 @@ const getData = async (page = 1) => {
         });
 };
 
+pieData.value = {
+    labels: ['A', 'B', 'C'],
+    datasets: [
+        {
+            data: [0, 0, 0],
+            backgroundColor: [documentStyle.getPropertyValue('--indigo-500'), documentStyle.getPropertyValue('--purple-500'), documentStyle.getPropertyValue('--teal-500'), documentStyle.getPropertyValue('--orange-500')],
+            hoverBackgroundColor: [documentStyle.getPropertyValue('--indigo-400'), documentStyle.getPropertyValue('--purple-400'), documentStyle.getPropertyValue('--teal-400')]
+        }
+    ]
+};
+
+pieOptions.value = {
+    plugins: {
+        legend: {
+            labels: {
+                usePointStyle: true,
+                color: textColor
+            }
+        }
+    }
+};
+polarData.value = {
+    datasets: [
+        {
+            data: [11, 16, 7, 3],
+            backgroundColor: [documentStyle.getPropertyValue('--indigo-500'), documentStyle.getPropertyValue('--purple-500'), documentStyle.getPropertyValue('--teal-500'), documentStyle.getPropertyValue('--orange-500')],
+            label: 'My dataset'
+        }
+    ],
+    labels: ['Indigo', 'Purple', 'Teal', 'Orange']
+};
+
+polarOptions.value = {
+    plugins: {
+        legend: {
+            labels: {
+                color: textColor
+            }
+        }
+    },
+    scales: {
+        r: {
+            grid: {
+                color: surfaceBorder
+            }
+        }
+    }
+};
 onMounted(() => {
     getData();
 });
@@ -197,6 +252,7 @@ watch(
                         <i class="pi pi-tablet text-blue-500 text-xl"></i>
                     </div>
                 </div>
+                <router-link to="/devices"><i class="pi pi-eye text-blue-500 text-xl"></i></router-link>
             </div>
         </div>
         <div class="col-12 lg:col-6 xl:col-3">
@@ -210,6 +266,7 @@ watch(
                         <i class="pi pi-building text-blue-500 text-xl"></i>
                     </div>
                 </div>
+                <router-link to="/companies"><i class="pi pi-eye text-blue-500 text-xl"></i></router-link>
             </div>
         </div>
         <div class="col-12 lg:col-6 xl:col-3">
@@ -223,6 +280,8 @@ watch(
                         <i class="pi pi-users text-blue-500 text-xl"></i>
                     </div>
                 </div>
+                <router-link to="/employees"><i class="pi pi-eye text-blue-500 text-xl"></i></router-link>
+
             </div>
         </div>
         <div class="col-12 lg:col-6 xl:col-3">
@@ -236,6 +295,8 @@ watch(
                         <i class="pi pi-chart-bar text-blue-500 text-xl"></i>
                     </div>
                 </div>
+                <router-link to="/deliveries"><i class="pi pi-eye text-blue-500 text-xl"></i></router-link>
+
             </div>
         </div>
 
@@ -249,6 +310,18 @@ watch(
             <div class="card">
                 <h5>Entregas Mensais</h5>
                 <Chart type="bar" :data="barDataMonth" :options="barOptions"></Chart>
+            </div>
+        </div>
+        <div class="col-12 xl:col-6">
+            <div class="card flex flex-column align-items-center">
+                <h5 class="text-left w-full">Distribuição dos dispositivos pelos tipos</h5>
+                <Chart type="pie" :data="pieData" :options="pieOptions"></Chart>
+            </div>
+        </div>
+        <div class="col-12 xl:col-6">
+            <div class="card flex flex-column align-items-center">
+                <h5 class="text-left w-full">Distribuição dos Trabalhadores pelas empresas</h5>
+                <Chart type="polarArea" :data="polarData" :options="polarOptions"></Chart>
             </div>
         </div>
 

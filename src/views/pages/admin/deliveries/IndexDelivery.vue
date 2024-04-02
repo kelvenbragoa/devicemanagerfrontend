@@ -58,6 +58,8 @@ const getData = async (page = 1) => {
             type_device_id.value = typedevices.value[0].id;
             dataviewValue.value = typedevices.value[0].devices;
             isLoadingDiv.value = false;
+            isLoadingButton.value = false;
+            closeReturn();
         })
         .catch((error) => {
             isLoadingDiv.value = false;
@@ -192,10 +194,11 @@ const onUpdate = () => {
     axios
         .put(`${baseURL}/deliveries/${delivery_id.value}`, fields.value)
         .then((response) => {
-            closeReturn();
+            
             router.push({ path: '/deliveries' });
             toast.add({ severity: 'success', summary: `Successo`, detail: 'Devolução feita com sucesso', life: 3000 });
             getData();
+            
         })
         .catch((error) => {
             isLoadingButton.value = false;
@@ -205,7 +208,7 @@ const onUpdate = () => {
             }
         })
         .finally(() => {
-            isLoadingButton.value = false;
+            // isLoadingButton.value = false;
         });
 };
 
