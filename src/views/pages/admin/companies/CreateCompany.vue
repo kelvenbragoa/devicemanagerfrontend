@@ -21,9 +21,9 @@ function goBackUsingBack() {
     }
 }
 const schema = yup.object({
-    name: yup.string().required().label('Name'),
-    address: yup.string().required().label('Address'),
-    city: yup.string().required().label('City'),
+    name: yup.string().required().trim().label('Name'),
+    address: yup.string().required().trim().label('Address'),
+    city: yup.string().required().trim().label('City'),
     province_id: yup.string().required().label('Province')
     // email: yup.string().required().email().label('Email address'),
     // fullName: yup.string().required().label('Full name'),

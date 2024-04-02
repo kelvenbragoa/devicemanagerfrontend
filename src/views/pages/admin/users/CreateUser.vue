@@ -21,11 +21,11 @@ function goBackUsingBack() {
     }
 }
 const schema = yup.object({
-    name: yup.string().required().label('Name'),
-    email: yup.string().required().label('Email'),
-    mobile: yup.string().required().label('Telefone'),
-    password: yup.string().required().min(6).label('Password'),
-    role_id: yup.string().required().label('Nivel')
+    name: yup.string().required().trim().label('Name'),
+    email: yup.string().required().trim().label('Email'),
+    mobile: yup.string().required().trim().label('Telefone'),
+    password: yup.string().required().trim().min(6).label('Password'),
+    role_id: yup.string().required().trim().label('Nivel')
     // email: yup.string().required().email().label('Email email'),
     // fullName: yup.string().required().label('Full name'),
     // password: yup.string().required().min(6).label('Password'),

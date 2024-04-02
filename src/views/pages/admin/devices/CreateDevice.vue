@@ -23,13 +23,13 @@ function goBackUsingBack() {
     }
 }
 const schema = yup.object({
-    name: yup.string().required().label('Name'),
-    make: yup.string().required().label('make'),
-    model: yup.string().required().label('model'),
-    serial: yup.string().required().label('serial'),
-    type_device_id: yup.string().required().label('Dispositivo'),
-    device_status_id: yup.string().required().label('Estado'),
-    device_availability_id: yup.string().required().label('Disponibilidade')
+    name: yup.string().required().trim().label('Name'),
+    make: yup.string().required().trim().label('make'),
+    model: yup.string().required().trim().label('model'),
+    serial: yup.string().required().trim().label('serial'),
+    type_device_id: yup.string().required().trim().label('Dispositivo'),
+    device_status_id: yup.string().required().trim().label('Estado'),
+    device_availability_id: yup.string().required().trim().label('Disponibilidade')
     // email: yup.string().required().email().label('Email make'),
     // fullName: yup.string().required().label('Full name'),
     // password: yup.string().required().min(6).label('Password'),
