@@ -19,7 +19,7 @@ const logoUrl = computed(() => {
     <div class="surface-0 flex justify-content-center">
         <div id="home" class="landing-wrapper overflow-hidden">
             <div class="py-4 px-4 mx-0 md:mx-6 lg:mx-8 lg:px-8 flex align-items-center justify-content-between relative lg:static mb-3">
-                <a class="flex align-items-center" href="#"> <img :src="logoUrl" alt="Sakai Logo" height="50" class="mr-0 lg:mr-2" /><span class="text-900 font-medium text-2xl line-height-3 mr-8">SAKAI</span> </a>
+                <a class="flex align-items-center" href="#"> <img src="/demo/sys/logo.jpg" alt="Sakai Logo" height="50" class="mr-0 lg:mr-2" /><span class="text-900 font-medium text-2xl line-height-3 mr-8"></span> </a>
                 <a class="cursor-pointer block lg:hidden text-700 p-ripple" v-ripple v-styleclass="{ selector: '@next', enterClass: 'hidden', leaveToClass: 'hidden', hideOnOutsideClick: true }">
                     <i class="pi pi-bars text-4xl"></i>
                 </a>
@@ -30,7 +30,7 @@ const logoUrl = computed(() => {
                                 <span>Home</span>
                             </a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a @click="smoothScroll('#features')" class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 p-ripple" v-ripple>
                                 <span>Features</span>
                             </a>
@@ -44,7 +44,7 @@ const logoUrl = computed(() => {
                             <a @click="smoothScroll('#pricing')" class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 p-ripple" v-ripple>
                                 <span>Pricing</span>
                             </a>
-                        </li>
+                        </li> -->
                     </ul>
                     <div class="flex justify-content-between lg:block border-top-1 lg:border-top-none surface-border py-3 lg:py-0 mt-3 lg:mt-0">
                         <router-link to="/auth/login"><Button label="Login" class="p-button-rounded border-none ml-5 font-light text-white line-height-2 bg-blue-500"></Button></router-link>
@@ -55,7 +55,7 @@ const logoUrl = computed(() => {
                 </div>
             </div>
 
-            <div
+            <!-- <div
                 id="hero"
                 class="flex flex-column pt-4 px-4 lg:px-8 overflow-hidden"
                 style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, rgb(238, 239, 175) 0%, rgb(195, 227, 250) 100%); clip-path: ellipse(150% 87% at 93% 13%)"
@@ -68,9 +68,9 @@ const logoUrl = computed(() => {
                 <div class="flex justify-content-center md:justify-content-end">
                     <img src="/demo/images/landing/screen-1.png" alt="Hero Image" class="w-9 md:w-auto" />
                 </div>
-            </div>
+            </div> -->
 
-            <div id="features" class="py-4 px-4 lg:px-8 mt-5 mx-0 lg:mx-8">
+            <!-- <div id="features" class="py-4 px-4 lg:px-8 mt-5 mx-0 lg:mx-8">
                 <div class="grid justify-content-center">
                     <div class="col-12 text-center mt-8 mb-4">
                         <h2 class="text-900 font-normal mb-2">Marvelous Features</h2>
@@ -217,14 +217,14 @@ const logoUrl = computed(() => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
-            <div id="highlights" class="py-4 px-4 lg:px-8 mx-0 my-6 lg:mx-8">
+            <div id="home" class="py-4 px-4 lg:px-8 mx-0 my-6 lg:mx-8">
                 <div class="text-center">
-                    <h2 class="text-900 font-normal mb-2">Powerful Everywhere</h2>
-                    <span class="text-600 text-2xl">Amet consectetur adipiscing elit...</span>
+                    <h2 class="text-900 font-normal mb-2">CdM Device Manager</h2>
+                    <span class="text-600 text-2xl">Device Manager</span>
                 </div>
-
+<!-- 
                 <div class="grid mt-8 pb-2 md:pb-8">
                     <div class="flex justify-content-center col-12 lg:col-6 bg-purple-100 p-0 flex-order-1 lg:flex-order-0" style="border-radius: 8px">
                         <img src="/demo/images/landing/mockup.svg" class="w-11" alt="mockup mobile" />
@@ -239,26 +239,26 @@ const logoUrl = computed(() => {
                             >Lectus arcu bibendum at varius vel pharetra vel turpis nunc. Eget aliquet nibh praesent tristique magna sit amet purus gravida. Sit amet mattis vulputate enim nulla aliquet.</span
                         >
                     </div>
-                </div>
+                </div> -->
 
                 <div class="grid my-8 pt-2 md:pt-8">
                     <div class="col-12 lg:col-6 my-auto flex flex-column text-center lg:text-left lg:align-items-start">
-                        <div class="flex align-items-center justify-content-center bg-yellow-200 align-self-center lg:align-self-start" style="width: 4.2rem; height: 4.2rem; border-radius: 10px">
-                            <i class="pi pi-fw pi-desktop text-5xl text-yellow-700"></i>
+                        <div class="flex align-items-center justify-content-center bg-blue-200 align-self-center lg:align-self-start" style="width: 4.2rem; height: 4.2rem; border-radius: 10px">
+                            <i class="pi pi-fw pi-desktop text-5xl text-blue-700"></i>
                         </div>
-                        <h2 class="line-height-1 text-900 text-4xl font-normal">Celerisque Eu Ultrices</h2>
+                        <h2 class="line-height-1 text-900 text-4xl font-normal">CdM Device Manager</h2>
                         <span class="text-700 text-2xl line-height-3 mr-0 md:mr-2" style="max-width: 650px"
-                            >Adipiscing commodo elit at imperdiet dui. Viverra nibh cras pulvinar mattis nunc sed blandit libero. Suspendisse in est ante in. Mauris pharetra et ultrices neque ornare aenean euismod elementum nisi.</span
+                            >Sistema de gestão de entrega de dispositivos para trabalhadores, projetada para facilitar e otimizar o processo de entrega e rastreamento de dispositivos, como laptops, smartphones, tablets, radios e outros, para os funcionários de Cornelder de Moçambique.</span
                         >
                     </div>
 
-                    <div class="flex justify-content-end flex-order-1 sm:flex-order-2 col-12 lg:col-6 bg-yellow-100 p-0" style="border-radius: 8px">
-                        <img src="/demo/images/landing/mockup-desktop.svg" class="w-11" alt="mockup" />
+                    <div class="flex justify-content-end flex-order-1 sm:flex-order-2 col-12 lg:col-6 bg-blue-100 p-0" style="border-radius: 8px">
+                        <img src="/demo/sys/logo.jpg" class="w-11" alt="mockup" />
                     </div>
                 </div>
             </div>
 
-            <div id="pricing" class="py-4 px-4 lg:px-8 my-2 md:my-4">
+            <!-- <div id="pricing" class="py-4 px-4 lg:px-8 my-2 md:my-4">
                 <div class="text-center">
                     <h2 class="text-900 font-normal mb-2">Matchless Pricing</h2>
                     <span class="text-600 text-2xl">Amet consectetur adipiscing elit...</span>
@@ -358,29 +358,29 @@ const logoUrl = computed(() => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <div class="py-4 px-4 mx-0 mt-8 lg:mx-8">
                 <div class="grid justify-content-between">
                     <div class="col-12 md:col-2" style="margin-top: -1.5rem">
                         <a @click="smoothScroll('#home')" class="flex flex-wrap align-items-center justify-content-center md:justify-content-start md:mb-0 mb-3 cursor-pointer">
-                            <img :src="logoUrl" alt="footer sections" width="50" height="50" class="mr-2" />
-                            <h4 class="font-medium text-3xl text-900">SAKAI</h4>
+                            <img src="/demo/sys/logo.jpg" alt="footer sections" width="100" height="50" class="mr-2" />
+                            <h4 class="font-medium text-3xl text-900"></h4>
                         </a>
                     </div>
 
                     <div class="col-12 md:col-10 lg:col-7">
                         <div class="grid text-center md:text-left">
-                            <div class="col-12 md:col-3">
-                                <h4 class="font-medium text-2xl line-height-3 mb-3 text-900">Company</h4>
+                            <!-- <div class="col-12 md:col-3">
+                                <h4 class="font-medium text-2xl line-height-3 mb-3 text-900">Login</h4>
                                 <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">About Us</a>
                                 <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">News</a>
                                 <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Investor Relations</a>
                                 <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Careers</a>
                                 <a class="line-height-3 text-xl block cursor-pointer text-700">Media Kit</a>
-                            </div>
+                            </div> -->
 
-                            <div class="col-12 md:col-3 mt-4 md:mt-0">
+                            <!-- <div class="col-12 md:col-3 mt-4 md:mt-0">
                                 <h4 class="font-medium text-2xl line-height-3 mb-3 text-900">Resources</h4>
                                 <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Get Started</a>
                                 <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Learn</a>
@@ -400,7 +400,7 @@ const logoUrl = computed(() => {
                                 <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Brand Policy</a>
                                 <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Privacy Policy</a>
                                 <a class="line-height-3 text-xl block cursor-pointer text-700">Terms of Service</a>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>

@@ -52,7 +52,9 @@ onBeforeMount(() => {
             <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
                 <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius: 53px">
                     <div class="text-center mb-5">
-                        <img src="/demo/sys/logo.jpg" alt="Image" height="50" class="mb-3" />
+                        <router-link to="/">
+                            <img src="/demo/sys/logo.jpg" alt="Image" height="120" class="mb-3" />
+                        </router-link>
                         <div class="text-900 text-3xl font-medium mb-3">Bem vindo de volta</div>
                         <span class="text-600 font-medium">Faça login para continuar</span>
                         <div v-if="errorMessage">
@@ -72,7 +74,7 @@ onBeforeMount(() => {
                                 <Checkbox v-model="checked" id="rememberme1" binary class="mr-2"></Checkbox>
                                 <label for="rememberme1">Lembrar de mim</label>
                             </div>
-                            <a class="font-medium no-underline ml-2 text-right cursor-pointer" style="color: var(--primary-color)">Esqueceu a password?</a>
+                            <!-- <a class="font-medium no-underline ml-2 text-right cursor-pointer" style="color: var(--primary-color)">Esqueceu a password?</a> -->
                         </div>
                         <Button label="Sign In" class="w-full p-3 text-xl" @click="loginUser" v-if="!submitted"></Button>
                         <div class="text-center mb-5" v-if="submitted">

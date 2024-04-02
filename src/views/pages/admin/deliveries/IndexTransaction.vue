@@ -151,7 +151,7 @@ onMounted(() => {
                 <Column field="" sortable header="Tempo de Uso">
                     <template #body="slotProps">
                         <span v-if="slotProps.data.operation_id == 1"> ---- </span>
-                        <span v-else> {{ moment(slotProps.data.created_at).diff(slotProps.data.delivery.created_at, 'hours') }} Horas e {{ moment(slotProps.data.created_at).diff(slotProps.data.delivery.created_at, 'minutes') }} Minutos </span>
+                        <span v-else> {{ moment(slotProps.data.created_at).diff(slotProps.data.delivery.created_at, 'hours') }} Horas ({{ moment(slotProps.data.created_at).diff(slotProps.data.delivery.created_at, 'minutes') }} Minutos) </span>
                     </template>
                 </Column>
                 <Column field="created_at" sortable header="Criado em">

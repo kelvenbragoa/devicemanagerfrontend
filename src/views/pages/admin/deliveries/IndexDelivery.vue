@@ -29,6 +29,7 @@ const tempEmployeeValue = ref(null);
 const employeeValue = ref(null);
 const display = ref(false);
 const displayReturn = ref(false);
+const overlayLoading = ref(false);
 const delivery_id = ref(null);
 const observation_returning = ref(null);
 
@@ -103,6 +104,13 @@ const closeReturn = () => {
 };
 const close = () => {
     display.value = false;
+};
+
+const openOverLay = () => {
+    overlayLoading.value = true;
+};
+const closeOverLay = () => {
+    overlayLoading.value = false;
 };
 
 const getAvailability = (device) => {
@@ -201,17 +209,46 @@ const onUpdate = () => {
 
 const startDrag = (event, item) => {
     console.log(item);
-    event.dataTransfer.setData('itemID',item.id)
+    event.dataTransfer.setData('itemID', item.id);
 };
 
 const onDrop = (event, item) => {
-    console.log(event);
-    const itemId = event.dataTransfer.getData('itemID')
-    console.log(itemId)
+    const itemId = event.dataTransfer.getData('itemID');
+    // console.log(itemId);
+    // console.log(item);
+    // console.log(item.id);
+    openOverLay()
+
+    const values = {
+        device_id: itemId,
+        company_id: item.company_id,
+        employee_id: item.id
+    }
+
+    // console.log(values);
+
+    axios
+        .post(`${baseURL}/deliveriesdragdrop`, values)
+        .then((response) => {
+            closeOverLay();
+            resetForm();
+            router.push({ path: '/deliveries' });
+            toast.add({ severity: 'success', summary: `Successo`, detail: 'Entrega feita com sucesso', life: 3000 });
+            getData();
+        })
+        .catch((error) => {
+            closeOverLay();
+            toast.add({ severity: 'error', summary: `${error.response.data.message}`, detail: 'Detalhe da Mensagem', life: 3000 });
+            if (error.response.data.errors) {
+                setErrors(error.response.data.errors);
+            }
+        })
+        .finally(() => {
+            closeOverLay();
+        });
 };
 
 onMounted(() => {
-    // nodeService.getTreeNodes().then((data) => (treeValue.value = data));
     getData();
 });
 </script>
@@ -224,8 +261,8 @@ onMounted(() => {
             <Splitter style="height: auto" class="mb-5">
                 <SplitterPanel :size="25" :minSize="20">
                     <Accordion :activeIndex="0">
-                        <AccordionTab :header="company.name + `(${company.employees.length})`" v-for="company in retriviedData" :key="company.id" @drop="onDrop($event, company)" @dragenter.prevent @dragover.prevent>
-                            <div class="flex align-items-center justify-content-start mb-4 ml-2 mt-2" v-for="employee in company.employees" :key="employee.id" draggable="true" @dragstart="startDrag($event, employee)" >
+                        <AccordionTab :header="company.name + `(${company.employees.length})`" v-for="company in retriviedData" :key="company.id">
+                            <div class="flex align-items-center justify-content-start mb-4 ml-2 mt-2" v-for="employee in company.employees" :key="employee.id" @drop="onDrop($event, employee)" @dragenter.prevent @dragover.prevent>
                                 <span><i class="pi pi-users"></i> {{ employee.name }} {{ employee.deviceinhold == null ? '' : `(${employee.deviceinhold.device.name})` }}</span>
                             </div>
                         </AccordionTab>
@@ -253,7 +290,7 @@ onMounted(() => {
                                             <!-- TIPO DE VISUALIZACAO LISTA -->
                                             <template #list="slotProps">
                                                 <div class="grid grid-nogutter">
-                                                    <div v-for="(item, index) in slotProps.items" :key="index" class="col-12">
+                                                    <div v-for="(item, index) in slotProps.items" :key="index" class="col-12" draggable="true" @dragstart="startDrag($event, item)">
                                                         <div class="flex flex-column sm:flex-row sm:align-items-center p-4 gap-3" :class="{ 'border-top-1 surface-border': index !== 0 }">
                                                             <div class="md:w-10rem relative">
                                                                 <img class="block xl:block mx-auto border-round w-full" src="/demo/sys/device.jpg" :alt="item.name" />
@@ -268,21 +305,9 @@ onMounted(() => {
                                                                         <div class="text-lg font-medium text-900 mt-2">{{ item.serial }}</div>
                                                                         <div class="text-lg font-medium text-900 mt-2" v-if="item.employeeholding != null">{{ item.employeeholding.employee.name }} ({{ item.employeeholding.company.name }})</div>
                                                                     </div>
-                                                                    <!-- <div class="surface-100 p-1" style="border-radius: 30px">
-                                                                        <div
-                                                                            class="surface-0 flex align-items-center gap-2 justify-content-center py-1 px-2"
-                                                                            style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)"
-                                                                        >
-                                                                            <span class="text-900 font-medium text-sm">{{ item.rating }}</span>
-                                                                            <i class="pi pi-star-fill text-yellow-500"></i>
-                                                                        </div>
-                                                                    </div> -->
                                                                 </div>
                                                                 <div class="flex flex-column md:align-items-end gap-5">
-                                                                    <!-- <span class="text-xl font-semibold text-900">${{ item.price }}</span> -->
                                                                     <div class="flex flex-row-reverse md:flex-row gap-2">
-                                                                        <!-- <Button icon="pi pi-heart" outlined></Button> -->
-
                                                                         <Button
                                                                             icon="pi pi-ellipsis-v"
                                                                             label="Atribuir"
@@ -319,18 +344,8 @@ onMounted(() => {
                                                                         <div class="text-lg font-medium text-900 mt-1">{{ item.serial }}</div>
                                                                         <div class="text-lg font-medium text-900 mt-1" v-if="item.employeeholding != null">{{ item.employeeholding.employee.name }} ({{ item.employeeholding.company.name }})</div>
                                                                     </div>
-                                                                    <!-- <div class="surface-100 p-1" style="border-radius: 30px">
-                                                                        <div
-                                                                            class="surface-0 flex align-items-center gap-2 justify-content-center py-1 px-2"
-                                                                            style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)"
-                                                                        >
-                                                                            <span class="text-900 font-medium text-sm">{{ item.rating }}</span>
-                                                                            <i class="pi pi-star-fill text-yellow-500"></i>
-                                                                        </div>
-                                                                    </div> -->
                                                                 </div>
                                                                 <div class="flex flex-column gap-4 mt-4">
-                                                                    <!-- <span class="text-2xl font-semibold text-900">${{ item.price }}</span> -->
                                                                     <div class="flex gap-2">
                                                                         <Button
                                                                             icon="pi pi-ellipsis-v"
@@ -387,9 +402,7 @@ onMounted(() => {
                 <ProgressSpinner style="width: 35px; height: 35px" strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner" v-if="isLoadingButton" />
             </div>
         </form>
-        <template #footer>
-            <!-- <Button label="Ok" @click="close" icon="pi pi-check" class="p-button-outlined" /> -->
-        </template>
+        <template #footer> </template>
     </Dialog>
 
     <Dialog header="Devolução Dispositivo" v-model:visible="displayReturn" :breakpoints="{ '960px': '75vw' }" :style="{ width: '40vw' }" :modal="true">
@@ -397,16 +410,6 @@ onMounted(() => {
             <div class="col-12 md:col-12">
                 <div class="card p-fluid">
                     <h5>Devolução de Dispositivos</h5>
-                    <!-- <div class="field">
-                        <label for="company_id">Empresa({{ retriviedData.length }})</label>
-                        <Dropdown v-model="company_id" :options="retriviedData" optionLabel="name" optionValue="id" placeholder="Empresa" @change="onSortCompanyChange($event)" />
-                        <small id="company_id-help" class="p-error">{{ errors.company_id }}</small>
-                    </div> -->
-                    <!-- <div class="field">
-                        <label for="employee_id">Trabalhadores ({{ employeeValue == null ? 0 : employeeValue.length }})</label>
-                        <Dropdown v-model="employee_id" :options="employeeValue" optionLabel="name" optionValue="id" placeholder="Trabalhadores" />
-                        <small id="employee_id-help" class="p-error">{{ errors.employee_id }}</small>
-                    </div> -->
                     <div class="field">
                         <label for="observation_returning">Observação ao devolver</label>
                         <InputText v-model="observation_returning" id="observation_returning" type="text" :class="{ 'p-invalid': errors.observation_returning }" />
@@ -416,8 +419,16 @@ onMounted(() => {
                 <ProgressSpinner style="width: 35px; height: 35px" strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner" v-if="isLoadingButton" />
             </div>
         </form>
-        <template #footer>
-            <!-- <Button label="Ok" @click="close" icon="pi pi-check" class="p-button-outlined" /> -->
-        </template>
+        <template #footer> </template>
+    </Dialog>
+
+    <Dialog header="Atribuindo o dispositivo" v-model:visible="overlayLoading" :breakpoints="{ '960px': '75vw' }" :style="{ width: '40vw' }" :modal="true">
+        <div class="col-12 md:col-12">
+            <div class="p-fluid text-center">
+                <ProgressSpinner style="width: 35px; height: 35px" strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner"/>
+                <p>Por favor aguarde</p>
+            </div>
+        </div>
+        <template #footer> </template>
     </Dialog>
 </template>
