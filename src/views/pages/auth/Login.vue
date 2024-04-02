@@ -1,6 +1,6 @@
 <script setup>
 import { useLayout } from '@/layout/composables/layout';
-import { ref, computed } from 'vue';
+import { ref, computed,onMounted, onBeforeMount } from 'vue';
 import AppConfig from '@/layout/AppConfig.vue';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
@@ -36,6 +36,13 @@ const loginUser = () => {
             submitted.value = false;
         });
 };
+
+onBeforeMount(() => {
+    const token = localStorage.getItem('token');
+        if (token) {
+            // User is authenticated, proceed to the route
+            router.replace('/dashboard');}
+});
 </script>
 
 <template>

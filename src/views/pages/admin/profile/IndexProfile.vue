@@ -38,13 +38,12 @@ let dataIdBeingDeleted = ref(null);
 const schema = yup.object({
     old_password: yup.string().required().min(6).label('Password'),
     new_password: yup.string().required().min(6).label('Password'),
-    password_confirm: yup
+    new_password_confirmation: yup
         .string()
         .oneOf([yup.ref('new_password')], 'Passwords must match')
         .required()
-        .label('Password confirmation'),
+        .label('Password confirmation')
 });
-
 
 const { defineField, handleSubmit, resetForm, errors, setErrors } = useForm({
     validationSchema: schema
@@ -52,7 +51,7 @@ const { defineField, handleSubmit, resetForm, errors, setErrors } = useForm({
 
 const [old_password] = defineField('old_password');
 const [new_password] = defineField('new_password');
-const [confirm_password] = defineField('confirm_password');
+const [new_password_confirmation] = defineField('new_password_confirmation');
 
 const onSubmit = handleSubmit((values) => {
     isLoadingButton.value = true;
@@ -60,7 +59,7 @@ const onSubmit = handleSubmit((values) => {
         .post(`${baseURL}/updatepassword`, values)
         .then((response) => {
             resetForm();
-            router.push({ path: '/users' });
+            // router.push({ path: '/users' });
             toast.add({ severity: 'success', summary: `Successo`, detail: 'Password editado com sucesso', life: 3000 });
         })
         .catch((error) => {
@@ -110,10 +109,10 @@ onMounted(() => {
                 <h5>Perfil do Usuario</h5>
                 <img src="/demo/sys/logo.jpg" alt="Image" height="100" class="mb-3 circle" />
                 <hr />
-                <p><strong>Nome:</strong> {{retriviedData.name}}</p>
+                <p><strong>Nome:</strong> {{ retriviedData.name }}</p>
                 <p><strong>Email:</strong> {{ retriviedData.email }}</p>
-                <p><strong>Mobile:</strong> {{retriviedData.mobile}}</p>
-                <p><strong>Nivel:</strong> {{retriviedData.role.name}}</p>
+                <p><strong>Mobile:</strong> {{ retriviedData.mobile }}</p>
+                <p><strong>Nivel:</strong> {{ retriviedData.role.name }}</p>
             </div>
         </div>
         <div class="col-12 lg:col-6 xl:col-8">
@@ -122,7 +121,6 @@ onMounted(() => {
                 <p>Utilize o formulario para atualizar seus dados</p>
                 <div class="col-12 md:col-12">
                     <div class="card p-fluid">
-
                         <p>Dados do usuario</p>
 
                         <div class="field">
@@ -153,19 +151,18 @@ onMounted(() => {
                                 <label for="new_password">Nova palavra passe</label>
                                 <InputText v-model="new_password" id="new_password" type="text" />
                                 <small id="new_password-help" class="p-error">{{ errors.new_password }}</small>
-
                             </div>
                             <div class="field">
-                                <label for="confirm_password">Repetir a palavra passe</label>
-                                <InputText v-model="confirm_password" id="confirm_password" type="text" />
-                                <small id="confirm_password-help" class="p-error">{{ errors.confirm_password }}</small>
-
+                                <label for="new_password_confirmation">Repetir a palavra passe</label>
+                                <InputText v-model="new_password_confirmation" id="new_password_confirmation" type="text" />
+                                <small id="new_password_confirmation-help" class="p-error">{{ errors.new_password_confirmation }}</small>
                             </div>
-                            <Button label="Submeter" class="mr-2 mb-2" @click="onSubmit" :disabled="isLoadingButton"></Button>
+                            <div class="col-12 md:col-2">
+                                <Button label="Submeter" class="mr-2 mb-2" @click="onSubmit" :disabled="isLoadingButton"></Button
+                                ><ProgressSpinner style="width: 35px; height: 35px" strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner" v-if="isLoadingButton" />
+                            </div>
                         </form>
                     </div>
-                   
-
                 </div>
             </div>
         </div>

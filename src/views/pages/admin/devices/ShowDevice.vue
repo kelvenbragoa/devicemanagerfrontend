@@ -105,6 +105,12 @@ onMounted(() => {
                 <Tag severity="danger" v-if="retriviedData.device_status_id == 2">{{ retriviedData.devicestatus.name }}</Tag>
                 <Tag severity="success" v-if="retriviedData.device_status_id == 1">{{ retriviedData.devicestatus.name }}</Tag>
             </p>
+            <p>
+                <strong>Disponibilidade:</strong> 
+                <Tag severity="danger" v-if="retriviedData.device_availability_id == 2">{{ retriviedData.deviceavailability.name }}</Tag>
+                <Tag severity="success" v-if="retriviedData.device_availability_id == 1">{{ retriviedData.deviceavailability.name }}</Tag>
+                <span v-if="retriviedData.device_availability_id==2">({{retriviedData.employeeholding.employee.name}})</span>
+            </p>
         </div>
     </div>
     <div class="text-center" v-else>

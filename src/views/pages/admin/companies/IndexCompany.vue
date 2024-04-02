@@ -15,7 +15,9 @@ import Paginator from 'primevue/paginator';
 const router = useRouter();
 const isLoadingDiv = ref(true);
 const isLoadingButton = ref(false);
+const isLoadingButtonExport = ref(false);
 const retriviedData = ref({ data: [] });
+const expandedRows = ref([]);
 const toast = useToast();
 const searchQuery = ref(null);
 const displayConfirmation = ref(false);
@@ -51,6 +53,13 @@ watch(
     }, 300)
 );
 
+const expandAll = () => {
+    expandedRows.value = retriviedData.value.data.reduce((acc, p) => (acc[p.id] = true) && acc, {});
+};
+const collapseAll = () => {
+    expandedRows.value = null;
+};
+
 const closeConfirmation = () => {
     displayConfirmation.value = false;
 };
@@ -78,6 +87,27 @@ const deleteData = () => {
         });
 };
 
+const downloadReport = () => {
+    isLoadingButtonExport.value = true;
+    axios
+        .get(`${baseURL}/export/company`, { responseType: 'blob' })
+        .then((response) => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'company.xlsx');
+            document.body.appendChild(link);
+            link.click();
+
+            toast.add({ severity: 'success', detail: `Relatorio baixado com sucesso`, summary: 'Sucesso', life: 3000 });
+            isLoadingButtonExport.value = false;
+        })
+        .catch((error) => {
+            isLoadingButtonExport.value = false;
+            toast.add({ severity: 'error', detail: `${error}`, summary: 'Erro', life: 3000 });
+        });
+};
+
 onMounted(() => {
     getData();
 });
@@ -96,17 +126,22 @@ onMounted(() => {
 
             <h5>Registro das Empresas</h5>
 
-            <router-link to="/companies/create"> <Button label="Criar Novo Registro" class="mr-2 mb-2"> <i class="pi pi-plus"></i> Criar Novo Registro </Button> </router-link>
+            <router-link to="/companies/create">
+                <Button label="Criar Novo Registro" class="mr-2 mb-2"> <i class="pi pi-plus"></i> Criar Novo Registro </Button>
+            </router-link>
+            <Button label="Baixar" class="mr-2 mb-2" @click="downloadReport()" :disabled="isLoadingButtonExport"> <i :class="!isLoadingButtonExport ? 'pi pi-arrow-down' : 'pi pi-spinner'"></i> Baixar Registro </Button>
+
 
             <p>Esta tabela contem {{ retriviedData.data ? retriviedData.total : 0 }} Registros.</p>
 
-            <DataTable :value="retriviedData.data" tableStyle="min-width: 50rem">
+            <DataTable :value="retriviedData.data" v-model:expandedRows="expandedRows" tableStyle="min-width: 50rem">
                 <template #header>
                     <div class="flex flex-wrap align-items-center justify-content-between gap-2">
                         <span class="text-xl text-900 font-bold">Empresas</span>
                         <Button icon="pi pi-refresh" rounded raised @click="getData" />
                     </div>
                 </template>
+                <Column :expander="true" headerStyle="width: 3rem" />
                 <Column field="name" header="#">
                     <template #body="slotProps">
                         {{ slotProps.index + 1 }}
@@ -116,6 +151,7 @@ onMounted(() => {
                 <Column field="address" sortable header="Endereço"></Column>
                 <Column field="city" sortable header="Cidade"></Column>
                 <Column field="province.name" sortable header="Provincia"></Column>
+                <Column field="employees.length" sortable header="Nº Trabalhadores"></Column>
                 <Column field="created_at" sortable header="Criado em">
                     <template #body="slotProps">
                         {{ moment(slotProps.data.created_at).format('DD-MM-YYYY H:mm') }}
@@ -144,6 +180,26 @@ onMounted(() => {
                         <Tag :value="slotProps.data.inventoryStatus" :severity="getSeverity(slotProps.data)" />
                     </template>
                 </Column> -->
+                <template #expansion="slotProps">
+                    <div class="p-3">
+                        <h5>Trabalhadores da {{ slotProps.data.name }}</h5>
+                        <DataTable :value="slotProps.data.employees">
+                            <Column field="id" header="#" :sortable="true">
+                                <template #body="slotProps">
+                                    {{ slotProps.index + 1 }}
+                                </template>
+                            </Column>
+                            <Column field="name" header="Nome" :sortable="true"></Column>
+                            <Column field="email" header="Email" :sortable="true"></Column>
+                            <Column field="mobile" header="Telefone" :sortable="true"></Column>
+                            <Column header="Ações">
+                                <template #body="slotProps">
+                                    <router-link :to="'/employees/' + slotProps.data.id + '/edit'"><i class="pi pi-file-edit"></i></router-link> | <router-link :to="'/employees/' + slotProps.data.id"><i class="pi pi-eye"></i></router-link> |
+                                </template>
+                            </Column>
+                        </DataTable>
+                    </div>
+                </template>
                 <template #footer> No total são {{ retriviedData.data ? retriviedData.total : 0 }} Empresas. </template>
             </DataTable>
             <TailwindPagination :data="retriviedData" @pagination-change-page="getData" bg-whitebg-blue-50 style="width: 10px" />

@@ -15,6 +15,7 @@ import Dropdown from 'primevue/dropdown';
 
 const router = useRouter();
 const isLoadingDiv = ref(true);
+const isLoadingButtonExport = ref(false);
 const isLoadingButton = ref(false);
 const retriviedData = ref({ data: [] });
 const toast = useToast();
@@ -84,7 +85,26 @@ const deleteData = () => {
             loadingButtonDelete.value = false;
         });
 };
+const downloadReport = () => {
+    isLoadingButtonExport.value = true;
+    axios
+        .get(`${baseURL}/export/device`, { responseType: 'blob' })
+        .then((response) => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'device.xlsx');
+            document.body.appendChild(link);
+            link.click();
 
+            toast.add({ severity: 'success', detail: `Relatorio baixado com sucesso`, summary: 'Sucesso', life: 3000 });
+            isLoadingButtonExport.value = false;
+        })
+        .catch((error) => {
+            isLoadingButtonExport.value = false;
+            toast.add({ severity: 'error', detail: `${error}`, summary: 'Erro', life: 3000 });
+        });
+};
 onMounted(() => {
     getData();
 });
@@ -106,6 +126,8 @@ onMounted(() => {
             <router-link to="/devices/create">
                 <Button label="Criar Novo Registro" class="mr-2 mb-2"> <i class="pi pi-plus"></i> Criar Novo Registro </Button>
             </router-link>
+            <Button label="Baixar" class="mr-2 mb-2" @click="downloadReport()" :disabled="isLoadingButtonExport"> <i :class="!isLoadingButtonExport ? 'pi pi-arrow-down' : 'pi pi-spinner'"></i> Baixar Registro </Button>
+
 
             <p>Esta tabela contem {{ retriviedData.data ? retriviedData.total : 0 }} Registros.</p>
 

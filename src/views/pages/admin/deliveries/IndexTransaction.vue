@@ -148,7 +148,7 @@ onMounted(() => {
                 </Column>
                 <Column field="employee.name" sortable header="Trabalhador"></Column>
                 <Column field="user.name" sortable header="Por"></Column>
-                <Column field="user.name" sortable header="Tempo de Uso">
+                <Column field="" sortable header="Tempo de Uso">
                     <template #body="slotProps">
                         <span v-if="slotProps.data.operation_id == 1"> ---- </span>
                         <span v-else> {{ moment(slotProps.data.created_at).diff(slotProps.data.delivery.created_at, 'hours') }} Horas e {{ moment(slotProps.data.created_at).diff(slotProps.data.delivery.created_at, 'minutes') }} Minutos </span>
