@@ -40,7 +40,7 @@ const barData = ref({
 });
 
 const barDataMonth = ref({
-    labels:['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+    labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
     datasets: [
         {
             label: 'Entregas Mensais',
@@ -256,7 +256,7 @@ watch(
             <div class="card">
                 <div class="flex align-items-center justify-content-between mb-4">
                     <h5>Atividades/Transações Recentes</h5>
-                    <router-link to="/transactions"><small>Ver todas transações</small></router-link> 
+                    <router-link to="/transactions"><small>Ver todas transações</small></router-link>
                     <!-- <div>
                         <Button icon="pi pi-ellipsis-v" class="p-button-text p-button-plain p-button-rounded" @click="$refs.menu1.toggle($event)"></Button>
                         <Menu ref="menu1" :popup="true" :model="items"></Menu>
@@ -269,13 +269,13 @@ watch(
                             <i class="pi pi-bars text-xl text-blue-500"></i>
                         </div>
                         <span class="text-900 line-height-3"
-                            >{{ items.user.name }}
+                            ><Tag severity="success" v-if="items.operation_id == 1"> {{ items.operation.name }}</Tag> <Tag severity="danger" v-if="items.operation_id == 2"> {{ items.operation.name }}</Tag>
+                            {{ moment(items.created_at).format('DD-MM-YYYY H:mm') }} - {{ items.user.name }}
                             <span class="text-700">
-                                efetuou uma operacao de 
+                                efetuou uma operacao de
                                 <Tag severity="success" v-if="items.operation_id == 1"> {{ items.operation.name }}</Tag>
-                                <Tag severity="danger" v-if="items.operation_id == 2"> {{ items.operation.name }}</Tag> 
-                                do dispositivo {{ items.device.name }} ({{ items.employee.name }} - {{ items.employee.company.name }}) -
-                                {{ moment(items.created_at).format('DD-MM-YYYY H:mm') }}
+                                <Tag severity="danger" v-if="items.operation_id == 2"> {{ items.operation.name }}</Tag>
+                                do dispositivo {{ items.device.name }} ({{ items.employee.name }} - {{ items.employee.company.name }})
                             </span>
                         </span>
                     </li>

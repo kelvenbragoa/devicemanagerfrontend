@@ -221,6 +221,10 @@ const onDrop = (event, item) => {
     const availability = event.dataTransfer.getData('deviceavailability');
     const status = event.dataTransfer.getData('devicestatus');
 
+    if(!itemId){
+        return
+    }
+
     if (availability == 2) {
         toast.add({ severity: 'error', summary: 'Este dispositivo encontra-se em uso no momento, escolhe outro.', detail: 'Detalhe da Mensagem', life: 3000 });
         return
