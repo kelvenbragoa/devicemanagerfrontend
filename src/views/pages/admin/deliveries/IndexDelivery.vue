@@ -55,8 +55,8 @@ const getData = async (page = 1) => {
             retriviedData.value = response.data.companies;
             companies.value = response.data.companies;
             typedevices.value = response.data.typedevices;
-            type_device_id.value = typedevices.value[0].id;
-            dataviewValue.value = typedevices.value[0].devices;
+            type_device_id.value = typedevices.value.length == 0 ? 0 : typedevices.value[0].id;
+            dataviewValue.value = typedevices.value.length == 0 ? 0 : typedevices.value[0].devices;
             isLoadingDiv.value = false;
             isLoadingButton.value = false;
             closeReturn();
@@ -194,11 +194,9 @@ const onUpdate = () => {
     axios
         .put(`${baseURL}/deliveries/${delivery_id.value}`, fields.value)
         .then((response) => {
-            
             router.push({ path: '/deliveries' });
             toast.add({ severity: 'success', summary: `Successo`, detail: 'Devolução feita com sucesso', life: 3000 });
             getData();
-            
         })
         .catch((error) => {
             isLoadingButton.value = false;
@@ -224,17 +222,17 @@ const onDrop = (event, item) => {
     const availability = event.dataTransfer.getData('deviceavailability');
     const status = event.dataTransfer.getData('devicestatus');
 
-    if(!itemId){
-        return
+    if (!itemId) {
+        return;
     }
 
     if (availability == 2) {
         toast.add({ severity: 'error', summary: 'Este dispositivo encontra-se em uso no momento, escolhe outro.', detail: 'Detalhe da Mensagem', life: 3000 });
-        return
+        return;
     }
     if (status == 2) {
         toast.add({ severity: 'error', summary: 'Este dispositivo encontra-se danificado no momento, escolhe outro', detail: 'Detalhe da Mensagem', life: 3000 });
-        return
+        return;
     }
 
     // console.log(itemId.id);
@@ -287,15 +285,16 @@ onMounted(() => {
                     <Accordion :activeIndex="0">
                         <AccordionTab :header="company.name + `(${company.employees.length})`" v-for="company in retriviedData" :key="company.id">
                             <div
-                                class="flex align-items-center justify-content-start mb-4 ml-2 mt-4 p-button-rounded"
+                                class="flex align-items-center justify-content-start mb-4 ml-2 mt-4"
                                 v-for="employee in company.employees"
                                 :key="employee.id"
                                 @drop="onDrop($event, employee)"
                                 @dragenter.prevent
                                 @dragover.prevent
                                 :class="employee.deviceinhold == null ? 'bg-blue-200' : 'bg-red-200'"
+                                style="border-radius: 10px"
                             >
-                                <span><i class="pi pi-users"></i> {{ employee.name }} {{ employee.deviceinhold == null ? '' : `(${employee.deviceinhold.device.name})` }}</span>
+                                <span class="mt-3 mb-3 ml-2"><i class="pi pi-users"></i> {{ employee.name }} {{ employee.deviceinhold == null ? '' : `(${employee.deviceinhold.device.name})` }}</span>
                             </div>
                         </AccordionTab>
                     </Accordion>

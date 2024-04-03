@@ -281,7 +281,6 @@ watch(
                     </div>
                 </div>
                 <router-link to="/employees"><i class="pi pi-eye text-blue-500 text-xl"></i></router-link>
-
             </div>
         </div>
         <div class="col-12 lg:col-6 xl:col-3">
@@ -296,7 +295,6 @@ watch(
                     </div>
                 </div>
                 <router-link to="/deliveries"><i class="pi pi-eye text-blue-500 text-xl"></i></router-link>
-
             </div>
         </div>
 

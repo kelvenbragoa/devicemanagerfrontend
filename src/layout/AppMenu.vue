@@ -19,8 +19,8 @@ const model = ref([
     {
         label: 'Dispositivos',
         items: [
-            { label: 'Dispositivos', icon: 'pi pi-fw pi-tablet', to: '/devices', badge: 'NEW' },
-            { label: 'Tipos de Dispositivos', icon: 'pi pi-fw pi-bars', to: '/typedevices' }
+            { label: 'Tipos de Dispositivos', icon: 'pi pi-fw pi-bars', to: '/typedevices' },
+            { label: 'Dispositivos', icon: 'pi pi-fw pi-tablet', to: '/devices', badge: 'NEW' }
         ]
     },
     {
@@ -29,13 +29,12 @@ const model = ref([
             { label: 'Gestao de Entregas', icon: 'pi pi-fw pi-database', to: '/deliveries' },
             { label: 'Transações', icon: 'pi pi-fw pi-database', to: '/transactions' },
             { label: 'Auditoria de Registros', icon: 'pi pi-fw pi-history', to: '/audits' }
-
         ]
     },
     {
         label: 'Configurações',
         items: [
-            { label: 'Perfil', icon: 'pi pi-fw pi-user', to: '/profile' },
+            { label: 'Perfil', icon: 'pi pi-fw pi-user', to: '/profile' }
             // { label: 'LogOut', icon: 'pi pi-fw pi-unlock', to: '/dashboards' }
         ]
     }

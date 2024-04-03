@@ -53,11 +53,20 @@ const [serial] = defineField('serial');
 const [type_device_id] = defineField('type_device_id');
 const [device_status_id] = defineField('device_status_id');
 const [device_availability_id] = defineField('device_availability_id');
-
+const image = ref();
 const onSubmit = handleSubmit((values) => {
+    if (image.value != null) {
+        values.image = image.value;
+    }
+    
+    // console.log(values);
     isLoadingButton.value = true;
     axios
-        .post(`${baseURL}/devices`, values)
+        .post(`${baseURL}/devices`, values,{
+            headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
         .then((response) => {
             resetForm();
             router.push({ path: '/devices' });
@@ -90,6 +99,11 @@ const getTypeDeviceAndStatusCreateDevice = () => {
             toast.add({ severity: 'error', summary: `${error}`, detail: 'Message Detail', life: 3000 });
             goBackUsingBack();
         });
+};
+
+const onFileUpload = (event) => {
+    image.value = event.files[0];
+    console.log(image.value);
 };
 onMounted(() => {
     getTypeDeviceAndStatusCreateDevice();
@@ -143,6 +157,10 @@ onMounted(() => {
                             <label for="device_availability_id">Disponibilidade do Dispositivo</label>
                             <Dropdown v-model="device_availability_id" :options="deviceavailability" optionLabel="name" optionValue="id" placeholder="Selecionar" :class="{ 'p-invalid': errors.device_availability_id }" />
                             <small id="device_availability_id-help" class="p-error">{{ errors.device_availability_id }}</small>
+                        </div>
+                        <div class="field">
+                            <label for="image">Imagem</label>
+                            <FileUpload mode="basic" name="image[]" accept="image/*" auto :maxFileSize="1000000" customUpload @uploader="onFileUpload" />
                         </div>
                     </div>
                     <Button label="Submeter" class="mr-2 mb-2" @click="onSubmit" :disabled="isLoadingButton"></Button

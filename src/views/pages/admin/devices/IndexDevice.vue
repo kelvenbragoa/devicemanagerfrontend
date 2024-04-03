@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue';
 import { RouterView, RouterLink, useRouter, useRoute } from 'vue-router';
-import { baseURL } from '@/service/ApiConstant';
+import { baseURL, storageURL } from '@/service/ApiConstant';
 import axios from 'axios';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
@@ -156,6 +156,11 @@ onMounted(() => {
                         {{ slotProps.index + 1 }}
                     </template>
                 </Column>
+                <Column header="Image">
+                        <template #body="slotProps">
+                            <img :src="storageURL + slotProps.data.image" :alt="storageURL +slotProps.data.image" class="shadow-2" width="100" style="border-radius: 15px;"/>
+                        </template>
+                    </Column>
                 <Column field="name" sortable header="Nome"></Column>
                 <Column field="make" sortable header="Marca"></Column>
                 <Column field="model" sortable header="Modelo"></Column>

@@ -54,11 +54,21 @@ const [serial] = defineField('serial');
 const [type_device_id] = defineField('type_device_id');
 const [device_status_id] = defineField('device_status_id');
 const [device_availability_id] = defineField('device_availability_id');
+const [_method] = defineField('_method');
+
+const image = ref();
 
 const onSubmit = handleSubmit((values) => {
+    if (image.value != null) {
+        values.image = image.value;
+    }
     isLoadingButton.value = true;
     axios
-        .put(`${baseURL}/devices/${router.currentRoute.value.params.id}`, values)
+        .post(`${baseURL}/devices/${router.currentRoute.value.params.id}`, values,{
+            headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
         .then((response) => {
             resetForm();
             router.push({ path: '/devices' });
@@ -75,6 +85,11 @@ const onSubmit = handleSubmit((values) => {
             isLoadingButton.value = false;
         });
 });
+
+const onFileUpload = (event) => {
+    image.value = event.files[0];
+    console.log(image.value);
+};
 
 const getData = () => {
     axios
@@ -94,6 +109,7 @@ const getData = () => {
             device_status_id.value = retriviedData.value.device_status_id;
             device_availability_id.value = retriviedData.value.device_availability_id;
             serial.value = retriviedData.value.serial;
+            _method.value = 'put';
 
             isLoadingDiv.value = false;
         })
@@ -156,6 +172,11 @@ onMounted(() => {
                             <label for="device_availability_id">Disponibilidade do Dispositivo</label>
                             <Dropdown v-model="device_availability_id" :options="deviceavailability" optionLabel="name" optionValue="id" placeholder="Selecionar" :class="{ 'p-invalid': errors.device_availability_id }" disabled />
                             <small id="device_availability_id-help" class="p-error">{{ errors.device_availability_id }}</small>
+                            <InputText v-model="_method" id="_method" type="hidden" />
+                        </div>
+                        <div class="field">
+                            <label for="image">Imagem</label>
+                            <FileUpload mode="basic" name="image[]" accept="image/*" auto :maxFileSize="1000000" customUpload @uploader="onFileUpload" />
                         </div>
                     </div>
                     <Button label="Submeter" class="mr-2 mb-2" @click="onSubmit" :disabled="isLoadingButton"></Button

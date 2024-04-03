@@ -1,6 +1,6 @@
 <script setup>
 import { RouterView, RouterLink, useRouter, useRoute } from 'vue-router';
-import { baseURL } from '@/service/ApiConstant';
+import { baseURL, storageURL } from '@/service/ApiConstant';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import { useForm } from 'vee-validate';
@@ -94,23 +94,31 @@ onMounted(() => {
                 <h5>Dispositivo</h5>
             </div>
 
-            <p>Detalhes da Dispositivo</p>
-            <p><strong>Nome:</strong> {{ retriviedData.name }}</p>
-            <p><strong>Marca:</strong> {{ retriviedData.make }}</p>
-            <p><strong>Modelo:</strong> {{ retriviedData.model }}</p>
-            <p><strong>Serial:</strong> {{ retriviedData.serial }}</p>
-            <p><strong>Tipo de Dispositivo:</strong> {{ retriviedData.typedevice.name }}</p>
-            <p>
-                <strong>Estado:</strong> 
-                <Tag severity="danger" v-if="retriviedData.device_status_id == 2">{{ retriviedData.devicestatus.name }}</Tag>
-                <Tag severity="success" v-if="retriviedData.device_status_id == 1">{{ retriviedData.devicestatus.name }}</Tag>
-            </p>
-            <p>
-                <strong>Disponibilidade:</strong> 
-                <Tag severity="danger" v-if="retriviedData.device_availability_id == 2">{{ retriviedData.deviceavailability.name }}</Tag>
-                <Tag severity="success" v-if="retriviedData.device_availability_id == 1">{{ retriviedData.deviceavailability.name }}</Tag>
-                <span v-if="retriviedData.device_availability_id==2">({{retriviedData.employeeholding.employee.name}})</span>
-            </p>
+            <div class="grid">
+                <div class="col-12 lg:col-6 xl:col-6">
+                    <p>Detalhes da Dispositivo</p>
+                    <p><strong>Nome:</strong> {{ retriviedData.name }}</p>
+                    <p><strong>Marca:</strong> {{ retriviedData.make }}</p>
+                    <p><strong>Modelo:</strong> {{ retriviedData.model }}</p>
+                    <p><strong>Serial:</strong> {{ retriviedData.serial }}</p>
+                    <p><strong>Tipo de Dispositivo:</strong> {{ retriviedData.typedevice.name }}</p>
+                    <p>
+                        <strong>Estado:</strong> 
+                        <Tag severity="danger" v-if="retriviedData.device_status_id == 2">{{ retriviedData.devicestatus.name }}</Tag>
+                        <Tag severity="success" v-if="retriviedData.device_status_id == 1">{{ retriviedData.devicestatus.name }}</Tag>
+                    </p>
+                    <p>
+                        <strong>Disponibilidade:</strong> 
+                        <Tag severity="danger" v-if="retriviedData.device_availability_id == 2">{{ retriviedData.deviceavailability.name }}</Tag>
+                        <Tag severity="success" v-if="retriviedData.device_availability_id == 1">{{ retriviedData.deviceavailability.name }}</Tag>
+                        <span v-if="retriviedData.device_availability_id==2">({{retriviedData.employeeholding.employee.name}})</span>
+                    </p>
+                </div>
+                <div class="col-12 lg:col-6 xl:col-6">
+                    <img :src="storageURL+retriviedData.image" alt="" style="border-radius: 15px;">
+                </div>
+            </div>
+           
         </div>
     </div>
     <div class="text-center" v-else>
