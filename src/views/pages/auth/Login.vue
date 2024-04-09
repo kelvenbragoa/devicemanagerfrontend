@@ -22,7 +22,7 @@ const loginUser = () => {
             password: password.value
         })
         .then((response) => {
-            console.log(response.data.access_token);
+            // console.log(response.data.access_token);
             localStorage.setItem('token', response.data.access_token);
             localStorage.setItem('user', JSON.stringify(response.data.user));
             toast.add({ severity: 'success', summary: 'Successo', detail: 'Message Detail', life: 3000 });

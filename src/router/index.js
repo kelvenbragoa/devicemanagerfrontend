@@ -56,33 +56,43 @@ const router = createRouter({
                     meta: {
                         requiresAuth: true
                     },
-                    component: () => import('@/views/pages/admin/users/IndexUser.vue')
+                    children:[
+                        {
+                            path: '/users',
+                            name: 'users',
+                            meta: {
+                                requiresAuth: true
+                            },
+                            component: () => import('@/views/pages/admin/users/IndexUser.vue')
+                        },
+                        {
+                            path: '/users/create',
+                            name: 'users.create',
+                            meta: {
+                                requiresAuth: true
+                            },
+                            component: () => import('@/views/pages/admin/users/CreateUser.vue')
+                        },
+                        {
+                            path: '/users/:id',
+                            name: 'users.show',
+                            meta: {
+                                requiresAuth: true
+                            },
+                            component: () => import('@/views/pages/admin/users/ShowUser.vue')
+                        },
+                        {
+                            path: '/users/:id/edit',
+                            name: 'users.edit',
+                            meta: {
+                                requiresAuth: true
+                            },
+                            component: () => import('@/views/pages/admin/users/EditUser.vue')
+                        },
+        
+                    ]
                 },
-                {
-                    path: '/users/create',
-                    name: 'users.create',
-                    meta: {
-                        requiresAuth: true
-                    },
-                    component: () => import('@/views/pages/admin/users/CreateUser.vue')
-                },
-                {
-                    path: '/users/:id',
-                    name: 'users.show',
-                    meta: {
-                        requiresAuth: true
-                    },
-                    component: () => import('@/views/pages/admin/users/ShowUser.vue')
-                },
-                {
-                    path: '/users/:id/edit',
-                    name: 'users.edit',
-                    meta: {
-                        requiresAuth: true
-                    },
-                    component: () => import('@/views/pages/admin/users/EditUser.vue')
-                },
-
+                
                 //employees route
                 {
                     path: '/employees',
@@ -193,24 +203,6 @@ const router = createRouter({
                         requiresAuth: true
                     },
                     component: () => import('@/views/pages/admin/deliveries/IndexDelivery.vue')
-                    // children: [
-                    //     {
-                    //         path: '/deliveries',
-                    //         component: () => import('@/views/pages/admin/deliveries/IndexDelivery.vue')
-                    //     },
-                    //     {
-                    //         path: '/deliveries/list',
-                    //         component: () => import('@/views/pages/admin/deliveries/IndexDelivery.vue')
-                    //     },
-                    //     {
-                    //         path: '/deliveries/transactions',
-                    //         component: () => import('@/views/pages/admin/companies/IndexCompany.vue')
-                    //     },
-                    //     {
-                    //         path: '/deliveries/logs',
-                    //         component: () => import('@/views/pages/admin/devices/IndexDevice.vue')
-                    //     }
-                    // ]
                 },
                 {
                     path: '/transactions',

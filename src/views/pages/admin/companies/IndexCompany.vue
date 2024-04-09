@@ -107,8 +107,10 @@ const downloadReport = () => {
             toast.add({ severity: 'error', detail: `${error}`, summary: 'Erro', life: 3000 });
         });
 };
+const user = ref([]);
 
 onMounted(() => {
+    user.value = JSON.parse(localStorage.getItem('user'));
     getData();
 });
 </script>
@@ -126,7 +128,7 @@ onMounted(() => {
 
             <h5>Registro das Empresas</h5>
 
-            <router-link to="/companies/create">
+            <router-link to="/companies/create"  v-if="user.role_id == 1 || user.role_id == 2">
                 <Button label="Criar Novo Registro" class="mr-2 mb-2"> <i class="pi pi-plus"></i> Criar Novo Registro </Button>
             </router-link>
             <Button label="Baixar" class="mr-2 mb-2" @click="downloadReport()" :disabled="isLoadingButtonExport"> <i :class="!isLoadingButtonExport ? 'pi pi-arrow-down' : 'pi pi-spinner'"></i> Baixar Registro </Button>
@@ -159,8 +161,8 @@ onMounted(() => {
                 </Column>
                 <Column header="Ações">
                     <template #body="slotProps">
-                        <router-link :to="'/companies/' + slotProps.data.slug + '/edit'"><i class="pi pi-file-edit"></i></router-link> | <router-link :to="'/companies/' + slotProps.data.slug"><i class="pi pi-eye"></i></router-link> |
-                        <a href="#" @click.prevent="confirmDeletion(slotProps.data.id)"><i class="pi pi-trash"></i></a>
+                        <router-link :to="'/companies/' + slotProps.data.slug + '/edit'"  v-if="user.role_id == 1 || user.role_id == 2" ><i class="pi pi-file-edit"></i></router-link> | <router-link :to="'/companies/' + slotProps.data.slug"><i class="pi pi-eye"></i></router-link> |
+                        <a href="#" @click.prevent="confirmDeletion(slotProps.data.id)"  v-if="user.role_id == 1 || user.role_id == 2"><i class="pi pi-trash"></i></a>
                     </template>
                 </Column>
                 <!-- <Column header="Image">

@@ -2,7 +2,7 @@
 import NodeService from '@/service/NodeService';
 import { ref, onMounted, watch } from 'vue';
 import { RouterView, RouterLink, useRouter, useRoute } from 'vue-router';
-import { baseURL } from '@/service/ApiConstant';
+import { baseURL, storageURL } from '@/service/ApiConstant';
 import axios from 'axios';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
@@ -324,7 +324,7 @@ onMounted(() => {
                                                     <div v-for="(item, index) in slotProps.items" :key="index" class="col-12" draggable="true" @dragstart="startDrag($event, item)">
                                                         <div class="flex flex-column sm:flex-row sm:align-items-center p-4 gap-3" :class="{ 'border-top-1 surface-border': index !== 0 }">
                                                             <div class="md:w-10rem relative">
-                                                                <img class="block xl:block mx-auto border-round w-full" src="/demo/sys/device.jpg" :alt="item.name" />
+                                                                <img class="block xl:block mx-auto border-round w-full" :src="storageURL + item.image ?? 'default.jpg'" :alt="item.name" />
                                                                 <Tag :value="item.devicestatus.name" :severity="getStatus(item)" class="absolute" style="left: 4px; top: 4px"></Tag>
                                                                 <Tag :value="item.deviceavailability.name" :severity="getAvailability(item)" class="absolute" style="left: 4px; bottom: 4px"></Tag>
                                                             </div>
@@ -362,7 +362,7 @@ onMounted(() => {
                                                         <div class="p-4 border-1 surface-border surface-card border-round flex flex-column">
                                                             <div class="surface-50 flex justify-content-center border-round p-3">
                                                                 <div class="relative mx-auto">
-                                                                    <img class="border-round w-full" src="/demo/sys/device.jpg" :alt="item.name" style="max-width: 300px" />
+                                                                    <img class="border-round w-full" :src="storageURL + item.image ?? 'default.jpg'" :alt="item.name" style="max-width: 200px" />
                                                                     <Tag :value="item.devicestatus.name" :severity="getStatus(item)" class="absolute" style="left: 4px; top: 4px"></Tag>
                                                                     <Tag :value="item.deviceavailability.name" :severity="getAvailability(item)" class="absolute" style="left: 4px; bottom: 4px"></Tag>
                                                                 </div>
