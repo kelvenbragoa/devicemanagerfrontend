@@ -147,7 +147,7 @@ onMounted(() => {
                 </Column>
                 <Column header="Ações">
                     <template #body="slotProps">
-                        <router-link :to="'/users/' + slotProps.data.id + '/edit'"><i class="pi pi-file-edit"></i></router-link> | <router-link :to="'/users/' + slotProps.data.id"><i class="pi pi-eye"></i></router-link> |
+                        <router-link :to="'/users/' + slotProps.data.slug + '/edit'"><i class="pi pi-file-edit"></i></router-link> | <router-link :to="'/users/' + slotProps.data.slug"><i class="pi pi-eye"></i></router-link> |
                         <a href="#" @click.prevent="confirmDeletion(slotProps.data.id)"><i class="pi pi-trash"></i></a>
                     </template>
                 </Column>

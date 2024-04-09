@@ -159,7 +159,7 @@ onMounted(() => {
                 </Column>
                 <Column header="Ações">
                     <template #body="slotProps">
-                        <router-link :to="'/companies/' + slotProps.data.id + '/edit'"><i class="pi pi-file-edit"></i></router-link> | <router-link :to="'/companies/' + slotProps.data.id"><i class="pi pi-eye"></i></router-link> |
+                        <router-link :to="'/companies/' + slotProps.data.slug + '/edit'"><i class="pi pi-file-edit"></i></router-link> | <router-link :to="'/companies/' + slotProps.data.slug"><i class="pi pi-eye"></i></router-link> |
                         <a href="#" @click.prevent="confirmDeletion(slotProps.data.id)"><i class="pi pi-trash"></i></a>
                     </template>
                 </Column>
@@ -194,7 +194,7 @@ onMounted(() => {
                             <Column field="mobile" header="Telefone" :sortable="true"></Column>
                             <Column header="Ações">
                                 <template #body="slotProps">
-                                    <router-link :to="'/employees/' + slotProps.data.id + '/edit'"><i class="pi pi-file-edit"></i></router-link> | <router-link :to="'/employees/' + slotProps.data.id"><i class="pi pi-eye"></i></router-link> |
+                                    <router-link :to="'/employees/' + slotProps.data.slug + '/edit'"><i class="pi pi-file-edit"></i></router-link> | <router-link :to="'/employees/' + slotProps.data.slug"><i class="pi pi-eye"></i></router-link> |
                                 </template>
                             </Column>
                         </DataTable>

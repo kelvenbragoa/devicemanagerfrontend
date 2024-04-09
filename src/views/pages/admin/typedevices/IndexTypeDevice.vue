@@ -157,7 +157,7 @@ onMounted(() => {
                 </Column>
                 <Column header="Ações">
                     <template #body="slotProps">
-                        <router-link :to="'/typedevices/' + slotProps.data.id + '/edit'"><i class="pi pi-file-edit"></i></router-link> | <router-link :to="'/typedevices/' + slotProps.data.id"><i class="pi pi-eye"></i></router-link> |
+                        <router-link :to="'/typedevices/' + slotProps.data.slug + '/edit'"><i class="pi pi-file-edit"></i></router-link> | <router-link :to="'/typedevices/' + slotProps.data.slug"><i class="pi pi-eye"></i></router-link> |
                         <a href="#" @click.prevent="confirmDeletion(slotProps.data.id)"><i class="pi pi-trash"></i></a>
                     </template>
                 </Column>
@@ -194,13 +194,13 @@ onMounted(() => {
                             </Column>
                             <Column header="Ações">
                                 <template #body="slotProps">
-                                    <router-link :to="'/devices/' + slotProps.data.id + '/edit'"><i class="pi pi-file-edit"></i></router-link> | <router-link :to="'/devices/' + slotProps.data.id"><i class="pi pi-eye"></i></router-link> |
+                                    <router-link :to="'/devices/' + slotProps.data.slug + '/edit'"><i class="pi pi-file-edit"></i></router-link> | <router-link :to="'/devices/' + slotProps.data.slug"><i class="pi pi-eye"></i></router-link> |
                                 </template>
                             </Column>
                         </DataTable>
                     </div>
                 </template>
-                <template #footer> In total there are {{ retriviedData.data ? retriviedData.total : 0 }} typedevices. </template>
+                <template #footer> No total sao {{ retriviedData.data ? retriviedData.total : 0 }} tipos de dispositivos. </template>
             </DataTable>
             <TailwindPagination :data="retriviedData" @pagination-change-page="getData" bg-whitebg-blue-50 style="width: 10px" />
         </div>

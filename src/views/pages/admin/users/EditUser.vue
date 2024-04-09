@@ -125,7 +125,7 @@ onMounted(() => {
                         </div>
                         <div class="field">
                             <label for="role_id">Nível</label>
-                            <Dropdown v-model="role_id" :options="roles" optionLabel="name" optionValue="id" placeholder="Selecionar" :class="{ 'p-invalid': errors.role_id }" disabled />
+                            <Dropdown v-model="role_id" :options="roles" optionLabel="name" :optionValue="id" placeholder="Selecionar" :class="{ 'p-invalid': errors.role_id }" disabled />
                             <small id="role_id-help" class="p-error">{{ errors.role_id }}</small>
                         </div>
                     </div>
