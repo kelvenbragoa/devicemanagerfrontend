@@ -89,7 +89,7 @@ onMounted(() => {
     <div className="card" v-if="!isLoadingDiv">
         <div class="col-12">
             <div class="card-w-title">
-                <Button label="Voltar" class="mr-2 mb-2" @click="goBackUsingBack"></Button>
+                <Button label="Voltar" class="mr-2 mb-2" @click="goBackUsingBack"><i class="pi pi-angle-left"></i> Voltar</Button>
                 <h5>Criar Empresa</h5>
             </div>
 

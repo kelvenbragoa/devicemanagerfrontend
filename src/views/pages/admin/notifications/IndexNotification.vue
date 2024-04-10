@@ -40,7 +40,19 @@ onMounted(() => {
         <p>Notificações do sistema.</p>
         <br />
         <div class="col-12 md:col-12" v-for="notification in retriviedData" :key="notification.id">
-            <Button label="Secondary" severity="info" rounded class="mb-2 mr-2"> {{ moment(notification.created_at).format('H:mm DD-MM-YYYY') }} - {{ notification.data.data }} </Button>
+            <div class="card p-fluid md:justify-content-between">
+                <div class="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
+                    <span>
+                        <i class="pi pi-bell"></i>
+                        <strong>{{ notification.data.data }}</strong>
+                    </span>
+                    <span>
+                        {{ moment(notification.created_at).format('H:mm DD-MM-YYYY') }}
+                    </span>
+                </div>
+
+                <!-- <Button label="Secondary" severity="info" rounded class="mb-2 mr-2">  </Button> -->
+            </div>
         </div>
     </div>
     <div class="text-center" v-else>

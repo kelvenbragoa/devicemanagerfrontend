@@ -174,7 +174,7 @@ onMounted(() => {
                                 <InputText v-model="new_password_confirmation" id="new_password_confirmation" type="text" />
                                 <small id="new_password_confirmation-help" class="p-error">{{ errors.new_password_confirmation }}</small>
                             </div>
-                            <div class="col-12 md:col-2">
+                            <div class="col-12 md:col-3">
                                 <Button label="Submeter" class="mr-2 mb-2" @click="onSubmit" :disabled="isLoadingButton"></Button
                                 ><ProgressSpinner style="width: 35px; height: 35px" strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner" v-if="isLoadingButton" />
                             </div>

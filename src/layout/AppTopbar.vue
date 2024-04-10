@@ -92,7 +92,9 @@ const refreshData = () => {
 
 onMounted(() => {
     getData();
+    // setInterval(refreshData, 1000000);
     setInterval(refreshData, 1000000);
+
 });
 </script>
 
