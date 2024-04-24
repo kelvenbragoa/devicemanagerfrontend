@@ -8,6 +8,8 @@ import * as yup from 'yup';
 import { useToast } from 'primevue/usetoast';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
+import moment from 'moment';
+
 
 const router = useRouter();
 const isLoadingDiv = ref(true);
@@ -93,12 +95,13 @@ onMounted(() => {
                 <Button label="Voltar" class="mr-2 mb-2" @click="goBackUsingBack"><i class="pi pi-angle-left"></i> Voltar</Button>
                 <h5>Empresa</h5>
             </div>
-
             <p>Detalhes da empresa</p>
             <p><strong>Nome:</strong> {{ retriviedData.name }}</p>
             <p><strong>Endereço:</strong> {{ retriviedData.address }}</p>
             <p><strong>Cidade:</strong> {{ retriviedData.city }}</p>
             <p><strong>Província:</strong> {{ retriviedData.province.name }}</p>
+            <p><strong>Trabalhadores:</strong> {{ retriviedData.employees.length }}</p>
+            <p><strong>Criado em:</strong> {{ moment(retriviedData.created_at).format('DD-MM-YYYY H:mm') }}</p>
         </div>
     </div>
     <div class="text-center" v-else>

@@ -211,7 +211,7 @@ const onUpdate = () => {
 };
 
 const startDrag = (event, item) => {
-    console.log(item);
+    // console.log(item);
     event.dataTransfer.setData('itemID', item.id);
     event.dataTransfer.setData('deviceavailability', item.device_availability_id);
     event.dataTransfer.setData('devicestatus', item.device_status_id);
@@ -307,7 +307,7 @@ onMounted(() => {
                                 <div class="col-12">
                                     <div class="card">
                                         <h5>Dispositivos</h5>
-                                        <DataView :value="dataviewValue" :layout="layout" :paginator="true" :rows="10">
+                                        <DataView :value="dataviewValue" :layout="layout" :paginator="true" :rows="20">
                                             <template #header>
                                                 <div class="grid grid-nogutter">
                                                     <div class="col-6 text-left">

@@ -8,6 +8,8 @@ import * as yup from 'yup';
 import { useToast } from 'primevue/usetoast';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
+import moment from 'moment';
+
 
 const router = useRouter();
 const isLoadingDiv = ref(true);
@@ -96,6 +98,7 @@ onMounted(() => {
 
             <p>Detalhes do tipo de dispositivo</p>
             <p><strong>Nome:</strong> {{ retriviedData.name }}</p>
+            <p><strong>Criado em:</strong> {{ moment(retriviedData.created_at).format('DD-MM-YYYY H:mm') }}</p>
             <!-- <p><strong>Endereço:</strong> {{ retriviedData.address }}</p>
             <p><strong>Cidade:</strong> {{ retriviedData.city }}</p>
             <p><strong>Província:</strong> {{ retriviedData.province.name }}</p> -->

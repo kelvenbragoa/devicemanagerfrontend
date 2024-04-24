@@ -22,6 +22,7 @@ const pieOptions = ref(null);
 const { isDarkTheme } = useLayout();
 const searchQuery = ref(null);
 const transactions = ref(null);
+const deliverytwentyfourhours = ref(null);
 const isLoadingDiv = ref(true);
 const retriviedData = ref();
 function goBackUsingBack() {
@@ -105,6 +106,7 @@ const getData = async (page = 1) => {
             pieData.value.labels = response.data.pieLabel;
             polarData.value.datasets[0].data = response.data.polarData;
             polarData.value.labels = response.data.polarLabel;
+            deliverytwentyfourhours.value = response.data.deliverytwentyfourhours;
             isLoadingDiv.value = false;
         })
         .catch((error) => {
@@ -298,6 +300,66 @@ watch(
             </div>
         </div>
 
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Em Bom Funcionamento</span>
+                        <div class="text-900 font-medium text-xl">{{ retriviedData.workingfine }}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width: 2.5rem; height: 2.5rem">
+                        <i class="pi pi-tablet text-green-500 text-xl"></i>
+                    </div>
+                </div>
+                <router-link to="/devices"><i class="pi pi-eye text-blue-500 text-xl"></i></router-link>
+            </div>
+        </div>
+
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Danificados</span>
+                        <div class="text-900 font-medium text-xl">{{ retriviedData.damaged }}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width: 2.5rem; height: 2.5rem">
+                        <i class="pi pi-tablet text-red-500 text-xl"></i>
+                    </div>
+                </div>
+                <router-link to="/devices"><i class="pi pi-eye text-blue-500 text-xl"></i></router-link>
+            </div>
+        </div>
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Em Utilização</span>
+                        <div class="text-900 font-medium text-xl">{{ retriviedData.busy }}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width: 2.5rem; height: 2.5rem">
+                        <i class="pi pi-tablet text-red-500 text-xl"></i>
+                    </div>
+                </div>
+                <router-link to="/devices"><i class="pi pi-eye text-blue-500 text-xl"></i></router-link>
+            </div>
+        </div>
+        <div class="col-12 lg:col-6 xl:col-3">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Disponíveis</span>
+                        <div class="text-900 font-medium text-xl">{{ retriviedData.free }}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width: 2.5rem; height: 2.5rem">
+                        <i class="pi pi-tablet text-green-500 text-xl"></i>
+                    </div>
+                </div>
+                <router-link to="/devices"><i class="pi pi-eye text-blue-500 text-xl"></i></router-link>
+            </div>
+        </div>
+
+        
+
         <div class="col-12 xl:col-6">
             <div class="card">
                 <h5>Entregas Diárias</h5>
@@ -320,6 +382,26 @@ watch(
             <div class="card flex flex-column align-items-center">
                 <h5 class="text-left w-full">Distribuição dos Trabalhadores pelas empresas</h5>
                 <Chart type="polarArea" :data="polarData" :options="polarOptions"></Chart>
+            </div>
+        </div>
+
+        <div class="col-12 xl:col-12">
+            <div class="card">
+                <div class="flex align-items-center justify-content-between mb-4">
+                    <h5>Trabalhadores com 24 horas de uso de dispositivo ({{ deliverytwentyfourhours.length }})</h5>
+                </div>
+
+                <ul class="p-0 mx-0 mt-0 mb-4 list-none">
+                    <li class="flex align-items-center py-2 border-bottom-1 surface-border" v-for="items in deliverytwentyfourhours" :key="items.id" >
+                        <div class="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
+                            <i class="pi pi-bell text-xl text-red-500"></i>
+                        </div>
+                        <span class="text-900 line-height-3">
+                            {{ moment(items.created_at).format('DD-MM-YYYY H:mm') }} - {{ items.employee.name }} da Empresa {{ items.company.name }} esta com o dispositivo {{ items.device.name }} a mais de
+                            <Tag severity="danger"> {{ moment().diff(items.created_at, 'hours') }} Horas ({{ moment().diff(items.created_at, 'minutes') }} Minutos)</Tag>.
+                        </span>
+                    </li>
+                </ul>
             </div>
         </div>
 
@@ -359,3 +441,28 @@ watch(
         <p>Por Favor Aguarde...</p>
     </div>
 </template>
+
+<style> 
+      
+        /* Define a CSS animation named "blink" */ 
+        @keyframes blink { 
+  
+            0%, 
+            100% { 
+                background-color: #ff0000; 
+                /* First color - red */ 
+            } 
+  
+            50% { 
+                background-color: black; 
+                /* Second color - black */ 
+            } 
+        } 
+  
+        /* Apply the "blink" animation to  
+        elements with class "blinking-effect" */ 
+        .blinking-effect { 
+            animation: blink 1s linear infinite; 
+            /* The animation will run indefinitely */ 
+        } 
+    </style> 

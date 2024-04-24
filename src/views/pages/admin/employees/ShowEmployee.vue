@@ -8,6 +8,7 @@ import * as yup from 'yup';
 import { useToast } from 'primevue/usetoast';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
+import moment from 'moment';
 
 const router = useRouter();
 const isLoadingDiv = ref(true);
@@ -99,6 +100,7 @@ onMounted(() => {
             <p><strong>Email:</strong> {{ retriviedData.email }}</p>
             <p><strong>Telefone:</strong> {{ retriviedData.mobile }}</p>
             <p><strong>Empresa:</strong> {{ retriviedData.company.name }}</p>
+            <p><strong>Criado em:</strong> {{ moment(retriviedData.created_at).format('DD-MM-YYYY H:mm') }}</p>
         </div>
     </div>
     <div class="text-center" v-else>

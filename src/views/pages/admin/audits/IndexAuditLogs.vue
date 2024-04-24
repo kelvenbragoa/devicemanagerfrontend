@@ -18,7 +18,8 @@ const isLoadingButtonExport = ref(false);
 const retriviedData = ref({ data: [] });
 const toast = useToast();
 const searchQuery = ref(null);
-const displayConfirmation = ref(false);
+const displayMoreInfo = ref(false);
+const actualActivity = ref([]);
 function goBackUsingBack() {
     if (router) {
         router.back();
@@ -51,12 +52,12 @@ watch(
     }, 300)
 );
 
-const closeConfirmation = () => {
-    displayConfirmation.value = false;
+const closeMoreInfo = () => {
+    displayMoreInfo.value = false;
 };
-const confirmDeletion = (id) => {
-    displayConfirmation.value = true;
-    dataIdBeingDeleted.value = id;
+const showMoreData = (data) => {
+    actualActivity.value = data;
+    displayMoreInfo.value = true;
 };
 
 const deleteData = () => {
@@ -66,7 +67,7 @@ const deleteData = () => {
         .delete(`${baseURL}/typedevices/${dataIdBeingDeleted.value}`)
         .then(() => {
             retriviedData.value.data = retriviedData.value.data.filter((data) => data.id !== dataIdBeingDeleted.value);
-            closeConfirmation();
+            closeMoreInfo();
             toast.add({ severity: 'success', summary: `Sucesso`, detail: 'Message Detail', life: 3000 });
         })
         .catch((error) => {
@@ -121,7 +122,6 @@ onMounted(() => {
             <!-- <router-link to="/typedevices/create"> <Button label="Criar Novo Registro" class="mr-2 mb-2"> <i class="pi pi-plus"></i> Criar Novo Registro </Button> </router-link> -->
             <Button label="Baixar" class="mr-2 mb-2" @click="downloadReport()" :disabled="isLoadingButtonExport"> <i :class="!isLoadingButtonExport ? 'pi pi-arrow-down' : 'pi pi-spinner'"></i> Baixar Registro </Button>
 
-
             <p>Esta tabela contem {{ retriviedData.data ? retriviedData.total : 0 }} Registros.</p>
 
             <DataTable :value="retriviedData.data" tableStyle="min-width: 50rem">
@@ -151,8 +151,13 @@ onMounted(() => {
                     </template>
                 </Column>
                 <Column field="causer.name" sortable header="Feito por"></Column>
-                <Column field="properties.attributes" sortable header="Parametros Novos"></Column>
-                <Column field="properties.old" sortable header="Parametros Antigos"></Column>
+                <Column header="Ações">
+                    <template #body="slotProps">
+                        <a href="#" @click.prevent="showMoreData(slotProps.data)"><i class="pi pi-eye"></i></a>
+                    </template>
+                </Column>
+                <!-- <Column field="properties.attributes" sortable header="Parametros Novos"></Column> -->
+                <!-- <Column field="properties.old" sortable header="Parametros Antigos"></Column> -->
                 <template #footer> No total são {{ retriviedData.data ? retriviedData.total : 0 }} Transações. </template>
             </DataTable>
             <TailwindPagination :data="retriviedData" @pagination-change-page="getData" bg-whitebg-blue-50 style="width: 10px" />
@@ -164,14 +169,74 @@ onMounted(() => {
         <p>Por Favor Aguarde...</p>
     </div>
 
-    <Dialog header="Confirmação" v-model:visible="displayConfirmation" :style="{ width: '350px' }" :modal="true">
-        <div class="flex align-items-center justify-content-center">
-            <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-            <span>Tem certeza que deseja proceder?</span>
+    <Dialog header="Informacoes" v-model:visible="displayMoreInfo" :breakpoints="{ '960px': '75vw' }" :style="{ width: '40vw' }" :modal="true">
+        <div class="justify-content-left">
+            
+            <p><strong>ID:</strong>{{ actualActivity.id }}</p>
+            <p><strong>Criado em:</strong>{{ moment(actualActivity.created_at).format('DD-MM-YYYY H:mm') }}</p>
+            <p><strong>Feito Por:</strong>{{ actualActivity.causer == null ? '' : actualActivity.causer.name }}</p>
+            <p>
+                <strong>Tipo:</strong>
+                <Tag severity="info" v-if="actualActivity.event === 'login'">{{ actualActivity.event }}</Tag>
+                <Tag severity="success" v-if="actualActivity.event === 'created'">{{ actualActivity.event }}</Tag>
+                <Tag severity="warning" v-if="actualActivity.event === 'updated'">{{ actualActivity.event }}</Tag>
+                <Tag severity="danger" v-if="actualActivity.event === 'deleted'">{{ actualActivity.event }}</Tag>
+            
+            </p>
+            <p><strong>Recurso Afetado:</strong>{{ actualActivity.subject_type }}</p>
+            <div>
+                <hr>
+                <p><strong>Antigos Parametros</strong></p>
+                <!-- <p>{{ actualActivity.properties.old }}</p> -->
+                <table >
+                    <thead v-if="actualActivity.properties.old">
+                        <tr>
+                            <th>Parâmetro</th>
+                            <th>Antigo Valor</th>
+                            <th>Novo Valor</th>
+                        </tr>
+                    </thead>
+                    <thead v-else>
+                        <tr>
+                            <th>Parâmetro</th>
+                            <th>Antigo Valor</th>
+                            <th>Novo Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody v-if="actualActivity.properties.old">
+                        <tr v-for="(value, key) in actualActivity.properties.old" :key="key">
+                            <td>{{ key }}</td>
+                            <td>{{ value }}</td>
+                            <td>{{ actualActivity.properties.attributes[key] }}</td>
+                        </tr>
+                    </tbody>
+                    <tbody v-else>
+                        <tr v-for="(value, key) in actualActivity.properties.attributes" :key="key">
+                            <td>{{ key }}</td>
+                            <td>{{ value }}</td>
+                            <!-- <td>{{ actualActivity.properties.attributes[key] }}</td> -->
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+            <!-- <div v-if="actualActivity.properties.attributes">
+                <hr>
+                <p><strong>Novos Parametros</strong></p>
+                <p>{{ actualActivity.properties.attributes }}</p>
+            </div> -->
+           
+            
         </div>
         <template #footer>
-            <Button label="Não" icon="pi pi-times" @click="closeConfirmation" class="p-button-text" />
-            <Button label="Sim" icon="pi pi-check" @click="deleteData" class="p-button-text" autofocus />
+            <Button label="OK" icon="pi pi-check" @click="closeMoreInfo" class="p-button-text"/>
         </template>
     </Dialog>
 </template>
+<style scoped>
+th, td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+</style>

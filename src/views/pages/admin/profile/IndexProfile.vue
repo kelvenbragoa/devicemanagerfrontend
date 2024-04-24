@@ -130,6 +130,7 @@ onMounted(() => {
                     <small> Ultimo Login as {{ moment(history.created_at).format('H:mm DD-MM-YYYY') }} pelo Ip: {{ history.properties.ip }} </small>
                 </p>
                 <Button label="LogOut" class="mr-2 mb-2" @click="logoutapp()" :disabled="isLoadingLogOut"> <i :class="!isLoadingLogOut ? 'pi pi-sign-out' : 'pi pi-spinner'"></i>LogOut</Button>
+                <ProgressSpinner style="width: 35px; height: 35px" strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner" v-if="isLoadingLogOut" />
             </div>
         </div>
         <div class="col-12 lg:col-6 xl:col-8">

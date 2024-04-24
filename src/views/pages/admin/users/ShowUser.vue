@@ -18,12 +18,21 @@ const isLoadingButton = ref(false);
 const retriviedData = ref();
 const auditData = ref();
 const toast = useToast();
+const displayMoreInfo = ref(false);
+const actualActivity = ref([]);
 
 function goBackUsingBack() {
     if (router) {
         router.back();
     }
 }
+const closeMoreInfo = () => {
+    displayMoreInfo.value = false;
+};
+const showMoreData = (data) => {
+    actualActivity.value = data;
+    displayMoreInfo.value = true;
+};
 const schema = yup.object({
     name: yup.string().required().label('Name'),
     address: yup.string().required().label('Address'),
@@ -104,6 +113,7 @@ onMounted(() => {
             <p><strong>Email:</strong> {{ retriviedData.email }}</p>
             <p><strong>Telefone:</strong> {{ retriviedData.mobile }}</p>
             <p><strong>Nível:</strong> {{ retriviedData.role.name }}</p>
+            <p><strong>Criado em:</strong> {{ moment(retriviedData.created_at).format('DD-MM-YYYY H:mm') }}</p>
             <hr>
             <h5>Auditoria de Registro do Usuario</h5>
             <DataTable :value="auditData.data" tableStyle="min-width: 50rem">
@@ -138,8 +148,13 @@ onMounted(() => {
                     </template>
                 </Column>
                 <Column field="causer.name" sortable header="Feito por"></Column>
-                <Column field="properties.attributes" sortable header="Parametros Novos"></Column>
-                <Column field="properties.old" sortable header="Parametros Antigos"></Column>
+                <!-- <Column field="properties.attributes" sortable header="Parametros Novos"></Column>
+                <Column field="properties.old" sortable header="Parametros Antigos"></Column> -->
+                <Column header="Ações">
+                    <template #body="slotProps">
+                        <a href="#" @click.prevent="showMoreData(slotProps.data)"><i class="pi pi-eye"></i></a>
+                    </template>
+                </Column>
                 <template #footer> No total são {{ auditData.data ? auditData.total : 0 }} Transações. </template>
             </DataTable>
             <TailwindPagination :data="auditData" @pagination-change-page="getData" bg-whitebg-blue-50 style="width: 10px" />
@@ -150,4 +165,76 @@ onMounted(() => {
         <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner" />
         <p>Por Favor Aguarde...</p>
     </div>
+
+    <Dialog header="Informacoes" v-model:visible="displayMoreInfo" :breakpoints="{ '960px': '75vw' }" :style="{ width: '40vw' }" :modal="true">
+        <div class="justify-content-left">
+            
+            <p><strong>ID:</strong>{{ actualActivity.id }}</p>
+            <p><strong>Criado em:</strong>{{ moment(actualActivity.created_at).format('DD-MM-YYYY H:mm') }}</p>
+            <p><strong>Feito Por:</strong>{{ actualActivity.causer == null ? '' : actualActivity.causer.name }}</p>
+            <p>
+                <strong>Tipo:</strong>
+                <Tag severity="info" v-if="actualActivity.event === 'login'">{{ actualActivity.event }}</Tag>
+                <Tag severity="success" v-if="actualActivity.event === 'created'">{{ actualActivity.event }}</Tag>
+                <Tag severity="warning" v-if="actualActivity.event === 'updated'">{{ actualActivity.event }}</Tag>
+                <Tag severity="danger" v-if="actualActivity.event === 'deleted'">{{ actualActivity.event }}</Tag>
+            
+            </p>
+            <p><strong>Recurso Afetado:</strong>{{ actualActivity.subject_type }}</p>
+            <div>
+                <hr>
+                <p><strong>Antigos Parametros</strong></p>
+                <!-- <p>{{ actualActivity.properties.old }}</p> -->
+                <table >
+                    <thead v-if="actualActivity.properties.old">
+                        <tr>
+                            <th>Parâmetro</th>
+                            <th>Antigo Valor</th>
+                            <th>Novo Valor</th>
+                        </tr>
+                    </thead>
+                    <thead v-else>
+                        <tr>
+                            <th>Parâmetro</th>
+                            <th>Antigo Valor</th>
+                            <th>Novo Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody v-if="actualActivity.properties.old">
+                        <tr v-for="(value, key) in actualActivity.properties.old" :key="key">
+                            <td>{{ key }}</td>
+                            <td>{{ value }}</td>
+                            <td>{{ actualActivity.properties.attributes[key] }}</td>
+                        </tr>
+                    </tbody>
+                    <tbody v-else>
+                        <tr v-for="(value, key) in actualActivity.properties.attributes" :key="key">
+                            <td>{{ key }}</td>
+                            <td>{{ value }}</td>
+                            <!-- <td>{{ actualActivity.properties.attributes[key] }}</td> -->
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+            <!-- <div v-if="actualActivity.properties.attributes">
+                <hr>
+                <p><strong>Novos Parametros</strong></p>
+                <p>{{ actualActivity.properties.attributes }}</p>
+            </div> -->
+           
+            
+        </div>
+        <template #footer>
+            <Button label="OK" icon="pi pi-check" @click="closeMoreInfo" class="p-button-text"/>
+        </template>
+    </Dialog>
+
 </template>
+<style scoped>
+th, td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+</style>

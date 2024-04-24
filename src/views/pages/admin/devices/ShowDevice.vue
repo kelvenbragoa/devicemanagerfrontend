@@ -8,6 +8,8 @@ import * as yup from 'yup';
 import { useToast } from 'primevue/usetoast';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
+import moment from 'moment';
+
 
 const router = useRouter();
 const isLoadingDiv = ref(true);
@@ -113,6 +115,7 @@ onMounted(() => {
                         <Tag severity="success" v-if="retriviedData.device_availability_id == 1">{{ retriviedData.deviceavailability.name }}</Tag>
                         <span v-if="retriviedData.device_availability_id == 2">({{ retriviedData.employeeholding.employee.name }})</span>
                     </p>
+                    <p><strong>Criado em:</strong> {{ moment(retriviedData.created_at).format('DD-MM-YYYY H:mm') }}</p>
                 </div>
                 <div class="col-12 lg:col-6 xl:col-6">
                     <img :src="storageURL + retriviedData.image ?? 'default.jpg'" alt="" style="border-radius: 15px" />
