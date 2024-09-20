@@ -160,7 +160,7 @@ onMounted(() => {
                 <!-- <Column field="properties.old" sortable header="Parametros Antigos"></Column> -->
                 <template #footer> No total são {{ retriviedData.data ? retriviedData.total : 0 }} Transações. </template>
             </DataTable>
-            <TailwindPagination :data="retriviedData" @pagination-change-page="getData" bg-whitebg-blue-50 style="width: 10px" />
+            <TailwindPagination :data="retriviedData" @pagination-change-page="getData" :limit="10" bg-whitebg-blue-50 style="width: 10px" />
         </div>
     </div>
 
@@ -171,7 +171,6 @@ onMounted(() => {
 
     <Dialog header="Informacoes" v-model:visible="displayMoreInfo" :breakpoints="{ '960px': '75vw' }" :style="{ width: '40vw' }" :modal="true">
         <div class="justify-content-left">
-            
             <p><strong>ID:</strong>{{ actualActivity.id }}</p>
             <p><strong>Criado em:</strong>{{ moment(actualActivity.created_at).format('DD-MM-YYYY H:mm') }}</p>
             <p><strong>Feito Por:</strong>{{ actualActivity.causer == null ? '' : actualActivity.causer.name }}</p>
@@ -181,14 +180,13 @@ onMounted(() => {
                 <Tag severity="success" v-if="actualActivity.event === 'created'">{{ actualActivity.event }}</Tag>
                 <Tag severity="warning" v-if="actualActivity.event === 'updated'">{{ actualActivity.event }}</Tag>
                 <Tag severity="danger" v-if="actualActivity.event === 'deleted'">{{ actualActivity.event }}</Tag>
-            
             </p>
             <p><strong>Recurso Afetado:</strong>{{ actualActivity.subject_type }}</p>
             <div>
-                <hr>
+                <hr />
                 <p><strong>Antigos Parametros</strong></p>
                 <!-- <p>{{ actualActivity.properties.old }}</p> -->
-                <table >
+                <table>
                     <thead v-if="actualActivity.properties.old">
                         <tr>
                             <th>Parâmetro</th>
@@ -217,7 +215,6 @@ onMounted(() => {
                             <!-- <td>{{ actualActivity.properties.attributes[key] }}</td> -->
                         </tr>
                     </tbody>
-
                 </table>
             </div>
             <!-- <div v-if="actualActivity.properties.attributes">
@@ -225,18 +222,17 @@ onMounted(() => {
                 <p><strong>Novos Parametros</strong></p>
                 <p>{{ actualActivity.properties.attributes }}</p>
             </div> -->
-           
-            
         </div>
         <template #footer>
-            <Button label="OK" icon="pi pi-check" @click="closeMoreInfo" class="p-button-text"/>
+            <Button label="OK" icon="pi pi-check" @click="closeMoreInfo" class="p-button-text" />
         </template>
     </Dialog>
 </template>
 <style scoped>
-th, td {
-  padding: 15px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
+th,
+td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 </style>

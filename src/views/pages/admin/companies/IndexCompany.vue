@@ -204,7 +204,7 @@ onMounted(() => {
                 </template>
                 <template #footer> No total são {{ retriviedData.data ? retriviedData.total : 0 }} Empresas. </template>
             </DataTable>
-            <TailwindPagination :data="retriviedData" @pagination-change-page="getData" bg-whitebg-blue-50 style="width: 10px" />
+            <TailwindPagination :data="retriviedData" @pagination-change-page="getData" :limit="10" bg-whitebg-blue-50 style="width: 10px" />
         </div>
     </div>
 
